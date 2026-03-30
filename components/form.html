@@ -1,0 +1,45 @@
+<!-- 3. AJAX FORM -->
+<section class="section" id="s3">
+  <div class="section-label reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Smart Form + Validation</h2>
+  </div>
+  <p class="section-desc reveal">Real-time validation, simulated AJAX submission with animated progress bar, and dynamic feedback — all jQuery-driven.</p>
+
+  <div class="demo-card reveal">
+    <h3>Contact Form <span class="badge">$.ajax + validation</span></h3>
+    <div class="ajax-form" id="contact-form">
+      <div class="form-field" id="ff-name">
+        <label>Full Name</label>
+        <input type="text" id="f-name" placeholder="Ada Okafor">
+        <span class="error-msg">Name must be at least 3 characters.</span>
+      </div>
+      <div class="form-field" id="ff-email">
+        <label>Email Address</label>
+        <input type="email" id="f-email" placeholder="ada@example.com">
+        <span class="error-msg">Please enter a valid email.</span>
+      </div>
+      <div class="form-field" id="ff-service">
+        <label>Service Needed</label>
+        <select id="f-service">
+          <option value="">— Select —</option>
+          <option>Web Development</option>
+          <option>Mobile App</option>
+          <option>UI/UX Design</option>
+          <option>Consulting</option>
+        </select>
+        <span class="error-msg">Please choose a service.</span>
+      </div>
+      <div class="form-field" id="ff-msg">
+        <label>Message</label>
+        <textarea id="f-msg" rows="4" placeholder="Tell me about your project..."></textarea>
+        <span class="error-msg">Message must be at least 20 characters.</span>
+      </div>
+      <div>
+        <button class="btn btn-filled" id="submit-btn">Send Message →</button>
+        <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+      <div class="form-feedback" id="form-feedback"></div>
+    </div>
+  </div>
+</section>
