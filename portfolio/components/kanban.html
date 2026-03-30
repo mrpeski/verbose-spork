@@ -1,0 +1,36 @@
+<!-- 6. DRAG & DROP KANBAN -->
+<section class="section" id="s6">
+  <div class="section-label reveal">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Drag & Drop Kanban</h2>
+  </div>
+  <p class="section-desc reveal">jQuery UI draggable + droppable to build an interactive task board. Cards carry data, counters update on drop.</p>
+
+  <div class="demo-card reveal">
+    <h3>Sprint Board <span class="badge">jQuery UI draggable</span></h3>
+    <div class="kanban">
+      <div class="kanban-col">
+        <div class="kanban-col-header">Backlog <span class="col-count" id="cnt-backlog">3</span></div>
+        <div class="kanban-list" id="col-backlog">
+          <div class="kanban-card"><div class="kanban-card-title">Setup CI/CD pipeline</div><span class="kanban-card-tag">DevOps</span></div>
+          <div class="kanban-card"><div class="kanban-card-title">Write API docs</div><span class="kanban-card-tag">Docs</span></div>
+          <div class="kanban-card"><div class="kanban-card-title">Accessibility audit</div><span class="kanban-card-tag">QA</span></div>
+        </div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-header">In Progress <span class="col-count" id="cnt-progress">2</span></div>
+        <div class="kanban-list" id="col-progress">
+          <div class="kanban-card"><div class="kanban-card-title">Build auth module</div><span class="kanban-card-tag">Backend</span></div>
+          <div class="kanban-card"><div class="kanban-card-title">Design system tokens</div><span class="kanban-card-tag">Design</span></div>
+        </div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-header">Done <span class="col-count" id="cnt-done">2</span></div>
+        <div class="kanban-list" id="col-done">
+          <div class="kanban-card"><div class="kanban-card-title">Project kickoff</div><span class="kanban-card-tag">Planning</span></div>
+          <div class="kanban-card"><div class="kanban-card-title">Wireframes approved</div><span class="kanban-card-tag">Design</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

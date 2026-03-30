@@ -1,0 +1,55 @@
+{
+  "personal": {
+    "name": "Olayinka",
+    "title": "Senior Front‑end Engineer",
+    "location": "Lagos, Nigeria",
+    "availability": "Remote"
+  },
+  "stats": {
+    "projectsDelivered": 148,
+    "usersReached": 3200000,
+    "clientSatisfaction": 99,
+    "yearsExperience": 12
+  },
+  "experience": [
+    {
+      "company": "Lykdat",
+      "title": "Senior Front‑end Engineer",
+      "period": "2022 – 2026",
+      "highlights": [
+        "Built a multi‑modal fashion search interface supporting keyword, image, and URL‑based search across 50+ global retail brands.",
+        "Optimised front‑end performance on data‑intensive analysis pages rendering sentiment charts, attribute breakdowns, keyword clouds, and 800+ reviews simultaneously.",
+        "Delivered tooling adopted by MAS Holdings — replacing a team of 30+ field researchers.",
+        "Engineered the RAG pipeline powering the AI Assistant using Next.js API endpoints."
+      ]
+    },
+    {
+      "company": "Udacity",
+      "title": "Front‑end Session Lead",
+      "period": "2022",
+      "highlights": [
+        "Led weekly group sessions and webinars for 50–100 students with a 4.89/5 satisfaction rating.",
+        "Mentored students 1‑on‑1 through front‑end projects."
+      ]
+    },
+    {
+      "company": "Vatebra Limited",
+      "title": "Front‑end Developer",
+      "period": "Pre‑2022",
+      "highlights": [
+        "Built a custom Drupal theme for WAEC Nigeria still live after 8 years.",
+        "Created custom WordPress themes for Genesys Health, Vatebra Tech Hub."
+      ]
+    }
+  ],
+  "technologies": {
+    "frontend": ["TypeScript","Next.js","React Hooks","Tailwind CSS","jQuery","Bootstrap 5"],
+    "backend": ["Python 3","FastAPI","Node.js","PHP"],
+    "databases": ["MongoDB","MySQL","PostgreSQL","Firebase"],
+    "devops": ["CI/CD Pipelines","Vercel","GitHub"]
+  },
+  "contact": {
+    "email": "olayinka@example.com",
+    "linkedin": "https://linkedin.com/in/olayinka"
+  }
+}
