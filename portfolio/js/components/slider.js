@@ -1,6 +1,5 @@
 var currentSlide = 0;
 var totalSlides = $('#slider-track .slide').length;
-var autoSlide;
 
 function goToSlide(idx) {
   currentSlide = (idx + totalSlides) % totalSlides;
@@ -9,13 +8,8 @@ function goToSlide(idx) {
   $('.dot[data-idx="' + currentSlide + '"]').addClass('active');
 }
 
-$('#slide-next').on('click', function () { goToSlide(currentSlide + 1); resetAuto(); });
-$('#slide-prev').on('click', function () { goToSlide(currentSlide - 1); resetAuto(); });
-$('.dot').on('click', function () { goToSlide(parseInt($(this).data('idx'))); resetAuto(); });
-
-function resetAuto() {
-  clearInterval(autoSlide);
-  autoSlide = setInterval(function () { goToSlide(currentSlide + 1); }, 5000);
-}
-
-resetAuto();
+// No auto-advance: hidden book pages keep timers running, so the slider
+// only moves on explicit input.
+$('#slide-next').on('click', function () { goToSlide(currentSlide + 1); });
+$('#slide-prev').on('click', function () { goToSlide(currentSlide - 1); });
+$('.dot').on('click', function () { goToSlide(parseInt($(this).data('idx'))); });

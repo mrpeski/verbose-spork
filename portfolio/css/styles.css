@@ -882,3 +882,50 @@
   .page .kanban { gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .page .kanban-card { padding: 10px 12px; }
   .page .kanban-card-title { font-size: 12px; }
+
+  /* intro / colophon */
+  .intro-lede {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .colophon {
+    border: 2px solid var(--ink);
+    padding: 18px 20px;
+    margin-top: auto;
+  }
+
+  .colophon-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+
+  .colophon-list {
+    list-style: none;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .colophon-list strong { color: var(--ink); }
+
+  /* filter */
+  .page .filter-btn { padding: 8px 14px; font-size: 10px; }
+  .page .portfolio-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+
+  /* search */
+  .page #search-input { padding: 10px 14px; margin-bottom: 12px; }
+  .page .search-result-item { padding: 10px 14px; }
+
+  /* tabs */
+  .page .tab-btn { padding: 10px 14px; font-size: 11px; }
+  .page .tab-pane { font-size: 13px; }
+
+  /* slider */
+  .page .slide { padding: 32px 28px; }
+  .page .slide-quote { font-size: 17px; }
