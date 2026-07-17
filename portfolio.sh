@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Build script for the portfolio site – mirrors the existing build.sh but
-# operates on the `portfolio/` sub‑tree. The generated page is written to
-# `portfolio/index.html`.
+# Build script for the portfolio site – concatenates the fragments in
+# portfolio/components/ into a magazine-style flipbook page at
+# portfolio/index.html.
 
 # Optional theme argument (defaults to "light")
 THEME=${1:-light}
@@ -20,40 +20,29 @@ cat >"$OUT" <<HTML
 <title>Olayinka – Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="theme-${THEME}">
 HTML
 
-# Core sections – you can reorder if you prefer
-cat portfolio/components/hero.html >>"$OUT"
-cat portfolio/components/nav.html >>"$OUT"
+# App shell opens (sidebar TOC + book container)
+cat portfolio/components/shell-open.html >>"$OUT"
 
-echo '<div id="demos">' >>"$OUT"
-
-# Demo components (same order as the original build)
-for comp in counters filter form accordion search kanban tabs slider; do
+# Book pages, in reading order
+for comp in cover placeholder placeholder-2 back-cover; do
   cat "portfolio/components/${comp}.html" >>"$OUT"
 done
 
-echo '</div>' >>"$OUT"
-cat portfolio/components/footer.html >>"$OUT"
+# App shell closes (flip controls)
+cat portfolio/components/shell-close.html >>"$OUT"
 cat portfolio/components/toast-container.html >>"$OUT"
 
-# External scripts – point to the new js locations
+# External scripts – book.js first so flip events exist for the components
 cat >>"$OUT" <<'JS'
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 <script src="js/utils/toast.js"></script>
-<script src="js/utils/scrollReveal.js"></script>
-<script src="js/components/nav.js"></script>
-<script src="js/components/counters.js"></script>
-<script src="js/components/filter.js"></script>
-<script src="js/components/form.js"></script>
-<script src="js/components/accordion.js"></script>
-<script src="js/components/search.js"></script>
-<script src="js/components/kanban.js"></script>
-<script src="js/components/tabs.js"></script>
-<script src="js/components/slider.js"></script>
+<script src="js/components/book.js"></script>
 </body>
 </html>
 JS

@@ -6,309 +6,75 @@
 <title>Olayinka – Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="theme-light">
-<!-- HERO -->
-<section id="hero">
-  <p class="hero-tag">Senior Front‑end Engineer — Remote</p>
-  <h1 class="hero-title">Olayinka<br><span>Senior Front‑end Engineer</span></h1>
-  <p class="hero-sub">Building high‑performing web experiences with modern JavaScript, TypeScript, React, and jQuery. Based in Lagos, Nigeria.</p>
-  <div class="hero-cta">
-    <button class="btn btn-filled" onclick="$('html,body').animate({scrollTop:$('#demos').offset().top},600)">Explore My Work</button>
-    <button class="btn" id="hero-toast-btn">Ping a Toast →</button>
+<!-- APP SHELL : sidebar TOC + book area -->
+<div class="app-shell">
+  <button id="menu-toggle" aria-label="Open menu">☰</button>
+  <div id="sidebar-scrim"></div>
+  <aside id="toc" class="sidebar">
+    <span class="toc-brand">Olayinka.</span>
+    <span class="toc-issue">Portfolio — Vol. 12 yrs</span>
+    <nav class="toc-links">
+      <a data-page="0" class="active">Cover</a>
+      <a data-page="1">Placeholder</a>
+      <a data-page="3">Back Cover</a>
+    </nav>
+    <span class="toc-foot">Senior Front-end Engineer<br>Lagos, Nigeria</span>
+  </aside>
+  <div class="book-area">
+    <div id="book">
+<!-- FRONT COVER (hard) -->
+<div class="page" data-density="hard" data-section="cover">
+  <div class="page-inner cover-inner">
+    <p class="cover-tag">Senior Front-end Engineer — Remote</p>
+    <h1 class="cover-title">OLA<br>YINKA</h1>
+    <p class="cover-sub">The Magazine Portfolio</p>
+    <span class="cover-num">$</span>
   </div>
-  <div class="hero-bg-num">$</div>
-</section><!-- STICKY NAV -->
-<nav id="sticky-nav">
-  <a href="#s1">Stats</a>
-  <a href="#s2">Technologies</a>
-  <a href="#s3">Contact</a>
-  <a href="#s4">FAQ</a>
-  <a href="#s5">Skills</a>
-  <a href="#s6">Workflow</a>
-  <a href="#experience-tabs">Experience</a>
-  <a href="#project-slider">Projects</a>
-</nav>
-<div id="demos">
-<!-- ANIMATED COUNTERS -->
-<section class="section" id="s1"
->
-  <div class="section-label reveal">
-    <span class="section-num">01</span>
-    <h2 class="section-title">Key Stats</h2>
-  </div>
-  <p class="section-desc reveal">Core metrics from my career.</p>
-
-  <div class="demo-card reveal">
-    <h3>Stats</h3>
-    <div class="counters-grid">
-      <div class="counter-box">
-        <span class="counter-num" data-target="148">0</span>
-        <span class="counter-label">Projects Delivered</span>
-      </div>
-      <div class="counter-box">
-        <span class="counter-num" data-target="3200000">0</span>
-        <span class="counter-label">Users Reached</span>
-      </div>
-      <div class="counter-box">
-        <span class="counter-num" data-target="99">0</span>
-        <span class="counter-label">Client Satisfaction %</span>
-      </div>
-      <div class="counter-box">
-        <span class="counter-num" data-target="12">0</span>
-        <span class="counter-label">Years Experience</span>
-      </div>
-    </div>
-    <button class="btn btn-filled" id="trigger-counter">↺ Replay Animation</button>
-  </div>
-</section><!-- DYNAMIC FILTER – TECH STACK -->
-<section class="section" id="s2">
-  <div class="section-label reveal">
-    <span class="section-num">02</span>
-    <h2 class="section-title">Technologies</h2>
-  </div>
-  <p class="section-desc reveal">Filterable view of my tech proficiencies.</p>
-
-  <div class="demo-card reveal">
-    <h3>Tech Stack</h3>
-    <div class="filter-btns">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="frontend">Frontend</button>
-      <button class="filter-btn" data-filter="backend">Backend</button>
-      <button class="filter-btn" data-filter="devops">DevOps</button>
-      <button class="filter-btn" data-filter="database">Database</button>
-    </div>
-    <div class="portfolio-grid">
-      <!-- Frontend -->
-      <div class="portfolio-item" data-cat="frontend"><span class="item-icon">⚛</span>TypeScript / React</div>
-      <div class="portfolio-item" data-cat="frontend"><span class="item-icon">🖌</span>Tailwind CSS</div>
-      <!-- Backend -->
-      <div class="portfolio-item" data-cat="backend"><span class="item-icon">🐍</span>Python / FastAPI</div>
-      <div class="portfolio-item" data-cat="backend"><span class="item-icon">🟢</span>Node.js</div>
-      <!-- DevOps -->
-      <div class="portfolio-item" data-cat="devops"><span class="item-icon">🚀</span>Vercel CI/CD</div>
-      <!-- Database -->
-      <div class="portfolio-item" data-cat="database"><span class="item-icon">🗄</span>MongoDB</div>
-    </div>
-  </div>
-</section>
-<!-- 3. AJAX FORM -->
-<section class="section" id="s3">
-  <div class="section-label reveal">
-    <span class="section-num">03</span>
-    <h2 class="section-title">Get in Touch</h2>
-  </div>
-  <p class="section-desc reveal">Have a project in mind? Tell me about it and I'll get back to you.</p>
-
-  <div class="demo-card reveal">
-    <h3>Contact Form</h3>
-    <div class="ajax-form" id="contact-form">
-      <div class="form-field" id="ff-name">
-        <label>Full Name</label>
-        <input type="text" id="f-name" placeholder="Ada Okafor">
-        <span class="error-msg">Name must be at least 3 characters.</span>
-      </div>
-      <div class="form-field" id="ff-email">
-        <label>Email Address</label>
-        <input type="email" id="f-email" placeholder="ada@example.com">
-        <span class="error-msg">Please enter a valid email.</span>
-      </div>
-      <div class="form-field" id="ff-service">
-        <label>Service Needed</label>
-        <select id="f-service">
-          <option value="">— Select —</option>
-          <option>Web Development</option>
-          <option>Mobile App</option>
-          <option>UI/UX Design</option>
-          <option>Consulting</option>
-        </select>
-        <span class="error-msg">Please choose a service.</span>
-      </div>
-      <div class="form-field" id="ff-msg">
-        <label>Message</label>
-        <textarea id="f-msg" rows="4" placeholder="Tell me about your project..."></textarea>
-        <span class="error-msg">Message must be at least 20 characters.</span>
-      </div>
-      <div>
-        <button class="btn btn-filled" id="submit-btn">Send Message →</button>
-        <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-      </div>
-      <div class="form-feedback" id="form-feedback"></div>
-    </div>
-  </div>
-</section><!-- 4. ACCORDION -->
-<section class="section" id="s4">
-  <div class="section-label reveal">
-    <span class="section-num">04</span>
-    <h2 class="section-title">FAQ</h2>
-  </div>
-  <p class="section-desc reveal">Answers to the questions I hear most often from clients and collaborators.</p>
-
-  <div class="demo-card reveal">
-    <h3>Frequently Asked</h3>
-    <div id="faq-accordion">
-      <div class="accordion-item">
-        <div class="accordion-header"><span>What technologies do you work with?</span><span class="accordion-icon">+</span></div>
-        <div class="accordion-body">I work with a full modern stack including JavaScript (vanilla & jQuery), React, Node.js, Python, and various SQL/NoSQL databases. For frontend, I specialise in crafting responsive, performant UIs with clean animations and pixel-perfect design.</div>
-      </div>
-      <div class="accordion-item">
-        <div class="accordion-header"><span>How long does a typical project take?</span><span class="accordion-icon">+</span></div>
-        <div class="accordion-body">Timelines vary by scope. A landing page takes 1–2 weeks, a full web application 6–12 weeks. I provide a detailed project timeline after the initial discovery call, and I use agile sprints to keep delivery predictable and transparent.</div>
-      </div>
-      <div class="accordion-item">
-        <div class="accordion-header"><span>Do you offer post-launch support?</span><span class="accordion-icon">+</span></div>
-        <div class="accordion-body">Yes — all projects include a 30-day post-launch support window at no additional cost. Beyond that, I offer flexible retainer plans for ongoing maintenance, feature additions, and performance monitoring.</div>
-      </div>
-      <div class="accordion-item">
-        <div class="accordion-header"><span>Can you work with my existing codebase?</span><span class="accordion-icon">+</span></div>
-        <div class="accordion-body">Absolutely. I regularly jump into legacy or existing codebases for audits, refactors, and feature development. I'll provide an honest assessment of what's there before committing to any changes.</div>
-      </div>
-    </div>
-  </div>
-</section><!-- 5. LIVE SEARCH -->
-<section class="section" id="s5">
-  <div class="section-label reveal">
-    <span class="section-num">05</span>
-    <h2 class="section-title">Skills</h2>
-  </div>
-  <p class="section-desc reveal">Search across my skills and tools to see if we're a match.</p>
-
-  <div class="demo-card reveal">
-    <h3>Search Skills</h3>
-    <input type="text" id="search-input" placeholder="Type to search skills and tools…">
-    <div id="search-count"></div>
-    <div class="search-results" id="search-results"></div>
-  </div>
-</section><!-- 6. DRAG & DROP KANBAN -->
-<section class="section" id="s6">
-  <div class="section-label reveal">
-    <span class="section-num">06</span>
-    <h2 class="section-title">Workflow</h2>
-  </div>
-  <p class="section-desc reveal">A peek at how I organise delivery — an agile board you can rearrange yourself.</p>
-
-  <div class="demo-card reveal">
-    <h3>Sprint Board</h3>
-    <div class="kanban">
-      <div class="kanban-col">
-        <div class="kanban-col-header">Backlog <span class="col-count" id="cnt-backlog">3</span></div>
-        <div class="kanban-list" id="col-backlog">
-          <div class="kanban-card"><div class="kanban-card-title">Setup CI/CD pipeline</div><span class="kanban-card-tag">DevOps</span></div>
-          <div class="kanban-card"><div class="kanban-card-title">Write API docs</div><span class="kanban-card-tag">Docs</span></div>
-          <div class="kanban-card"><div class="kanban-card-title">Accessibility audit</div><span class="kanban-card-tag">QA</span></div>
-        </div>
-      </div>
-      <div class="kanban-col">
-        <div class="kanban-col-header">In Progress <span class="col-count" id="cnt-progress">2</span></div>
-        <div class="kanban-list" id="col-progress">
-          <div class="kanban-card"><div class="kanban-card-title">Build auth module</div><span class="kanban-card-tag">Backend</span></div>
-          <div class="kanban-card"><div class="kanban-card-title">Design system tokens</div><span class="kanban-card-tag">Design</span></div>
-        </div>
-      </div>
-      <div class="kanban-col">
-        <div class="kanban-col-header">Done <span class="col-count" id="cnt-done">2</span></div>
-        <div class="kanban-list" id="col-done">
-          <div class="kanban-card"><div class="kanban-card-title">Project kickoff</div><span class="kanban-card-tag">Planning</span></div>
-          <div class="kanban-card"><div class="kanban-card-title">Wireframes approved</div><span class="kanban-card-tag">Design</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section><!-- EXPERIENCE TABS -->
-<section class="section" id="experience-tabs">
-  <div class="section-label reveal">
-    <span class="section-num">07</span>
-    <h2 class="section-title">Experience</h2>
-  </div>
-  <p class="section-desc reveal">Roles I have held across the past years.</p>
-
-  <div class="demo-card reveal">
-    <h3>Roles</h3>
-    <div class="tab-nav">
-      <button class="tab-btn active" data-tab="lykdat">Lykdat</button>
-      <button class="tab-btn" data-tab="udacity">Udacity</button>
-      <button class="tab-btn" data-tab="vatebra">Vatebra</button>
-    </div>
-    <div id="tab-lykdat" class="tab-pane active">
-      <h4>Senior Front‑end Engineer – Lykdat (2022‑2026)</h4>
-      <ul>
-        <li>Built a multi‑modal fashion search interface across 50+ brands.</li>
-        <li>Optimised front‑end performance for data‑intensive analysis pages.</li>
-        <li>Delivered tooling adopted by MAS Holdings.</li>
-        <li>Engineered a Retrieval‑Augmented Generation AI Assistant.</li>
-      </ul>
-    </div>
-    <div id="tab-udacity" class="tab-pane">
-      <h4>Front‑end Session Lead – Udacity (2022)</h4>
-      <ul>
-        <li>Led weekly webinars for 50‑100 students, 4.89/5 rating.</li>
-        <li>Mentored students 1‑on‑1 on front‑end projects.</li>
-      </ul>
-    </div>
-    <div id="tab-vatebra" class="tab-pane">
-      <h4>Front‑end Developer – Vatebra Limited (Pre‑2022)</h4>
-      <ul>
-        <li>Built a custom Drupal theme for WAEC Nigeria (live after 8 years).</li>
-        <li>Created WordPress themes for Genesys Health and Vatebra Tech Hub.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-<!-- PROJECT SHOWCASE SLIDER -->
-<section class="section" id="project-slider">
-  <div class="section-label reveal">
-    <span class="section-num">08</span>
-    <h2 class="section-title">Featured Projects</h2>
-  </div>
-  <p class="section-desc reveal">Select highlights from my recent work.</p>
-
-  <div class="demo-card reveal">
-    <h3>Projects</h3>
-    <div class="slider-wrap" id="project-slider-wrap">
-      <div class="slider-track" id="slider-track">
-        <div class="slide">
-          <p class="slide-quote">Multi‑modal fashion search interface supporting 50+ brands.</p>
-          <span class="slide-author">— Lykdat Project</span>
-        </div>
-        <div class="slide">
-          <p class="slide-quote">AI‑Assistant powered by RAG pipeline, delivering context‑aware answers from 106 M+ reviews.</p>
-          <span class="slide-author">— Lykdat AI Assistant</span>
-        </div>
-        <div class="slide">
-          <p class="slide-quote">This portfolio — a dozen interactive jQuery components assembled into a single page by a bash build script.</p>
-          <span class="slide-author">— This Site</span>
-        </div>
-      </div>
-    </div>
-    <div class="slider-controls">
-      <button class="slider-btn" id="slide-prev">←</button>
-      <button class="slider-btn" id="slide-next">→</button>
-      <div class="slider-dots" id="slider-dots">
-        <div class="dot active" data-idx="0"></div>
-        <div class="dot" data-idx="1"></div>
-        <div class="dot" data-idx="2"></div>
-      </div>
-    </div>
-  </div>
-</section>
 </div>
-<footer>
-  <span class="footer-brand">Olayinka.</span>
-  <p>Senior Front-end Engineer · Lagos, Nigeria · Available for remote work</p>
-</footer>
+<!-- TEMP placeholder page (removed in bullet 3) -->
+<div class="page" data-section="placeholder">
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">00</span>
+      <h2 class="section-title">Placeholder</h2>
+    </div>
+    <p>This page proves the flip engine works. Real content lands in bullet 3.</p>
+    <span class="page-num">01</span>
+  </div>
+</div>
+<!-- TEMP placeholder page (removed in bullet 3) -->
+<div class="page" data-section="placeholder-2">
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">00</span>
+      <h2 class="section-title">Placeholder Two</h2>
+    </div>
+    <p>Second dummy page — keeps the page count even so spreads line up.</p>
+    <span class="page-num">02</span>
+  </div>
+</div>
+<!-- BACK COVER (hard) -->
+<div class="page" data-density="hard" data-section="back">
+  <div class="page-inner cover-inner back-inner">
+    <span class="cover-brand">Olayinka.</span>
+    <p class="cover-sub">Senior Front-end Engineer · Lagos, Nigeria<br>Available for remote work</p>
+  </div>
+</div>
+    </div>
+    <div class="book-controls">
+      <button class="flip-btn" id="flip-prev" aria-label="Previous page">←</button>
+      <span id="page-indicator">1 / 1</span>
+      <button class="flip-btn" id="flip-next" aria-label="Next page">→</button>
+    </div>
+  </div>
+</div>
 <!-- TOAST CONTAINER -->
 <div id="toast-container"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 <script src="js/utils/toast.js"></script>
-<script src="js/utils/scrollReveal.js"></script>
-<script src="js/components/nav.js"></script>
-<script src="js/components/counters.js"></script>
-<script src="js/components/filter.js"></script>
-<script src="js/components/form.js"></script>
-<script src="js/components/accordion.js"></script>
-<script src="js/components/search.js"></script>
-<script src="js/components/kanban.js"></script>
-<script src="js/components/tabs.js"></script>
-<script src="js/components/slider.js"></script>
+<script src="js/components/book.js"></script>
 </body>
 </html>
