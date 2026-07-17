@@ -12,14 +12,3 @@ function closeToast($t) {
   $t.removeClass('show');
   setTimeout(function () { $t.remove(); }, 350);
 }
-
-$('#hero-toast-btn').on('click', function () {
-  var msgs = [
-    ['jQuery running smooth 🔥', '✅'],
-    ['DOM manipulation: unlocked', '🔓'],
-    ['Event system: active', '📡'],
-    ['AJAX calls: ready to fire', '🚀']
-  ];
-  var pick = msgs[Math.floor(Math.random() * msgs.length)];
-  showToast(pick[0], pick[1]);
-});

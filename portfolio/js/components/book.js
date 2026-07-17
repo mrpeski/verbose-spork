@@ -124,6 +124,7 @@ $('#flip-next').on('click', function () { flipSeq++; setFlipSpeed(FLIP_MS); flip
 
 // Keyboard navigation (ignored while typing in a field)
 $(document).on('keydown', function (e) {
+  if (e.key === 'Escape') { $('.sidebar').removeClass('open'); return; }
   if ($(e.target).is('input, textarea, select')) return;
   if (e.key === 'ArrowLeft') { flipSeq++; setFlipSpeed(FLIP_MS); flipPrevPage(); }
   if (e.key === 'ArrowRight') { flipSeq++; setFlipSpeed(FLIP_MS); flipNextPage(); }
