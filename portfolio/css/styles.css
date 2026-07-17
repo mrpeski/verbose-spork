@@ -47,6 +47,9 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* mobile browsers (iOS Safari) default button text to blue */
+  button { color: inherit; font-family: inherit; }
+
   html { scroll-behavior: smooth; }
 
   body {
@@ -438,6 +441,8 @@
   .kanban-col {
     border: 2px solid var(--ink);
     background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
   }
 
   .kanban-col-header {
@@ -460,6 +465,7 @@
   .kanban-list {
     padding: 12px;
     min-height: 200px;
+    flex: 1;
   }
 
   .kanban-card {
@@ -468,6 +474,7 @@
     padding: 12px 14px;
     margin-bottom: 8px;
     cursor: grab;
+    touch-action: none;
     font-size: 12px;
     transition: box-shadow 0.2s, transform 0.2s;
     user-select: none;
@@ -555,7 +562,8 @@
 
   .reveal.visible {
     opacity: 1;
-    transform: translateY(0);
+    /* must end at `none` — a lingering transform breaks jQuery UI drag coordinates */
+    transform: none;
   }
 
   /* ── FOOTER ── */
@@ -580,6 +588,8 @@
     #hero, .section { padding: 60px 24px; }
     #sticky-nav { padding: 0 12px; overflow-x: auto; }
     .kanban { grid-template-columns: 1fr; }
+    .tab-nav { overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
+    .tab-btn { flex: 1 0 auto; padding: 12px 8px; white-space: nowrap; }
     footer { padding: 40px 24px; }
   }
 
