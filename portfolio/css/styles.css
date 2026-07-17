@@ -382,8 +382,9 @@
     padding: 24px;
     background: #fafaf7;
     border-top: 2px solid var(--ink);
-    font-size: 13px;
-    line-height: 1.8;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.7;
     color: var(--steel);
   }
 
@@ -768,11 +769,18 @@
     background: var(--cream);
     border: 2px solid var(--ink);
     overflow: hidden;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 550px auto 720px;
+  }
+  @supports not (content-visibility: auto) {
+    .page {
+      contain: layout style paint;
+    }
   }
 
   .page-inner {
     height: 100%;
-    padding: 28px 32px;
+    padding: 28px 32px 48px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -783,16 +791,43 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
   }
 
   .page-num {
     position: absolute;
-    bottom: 14px;
-    right: 20px;
+    bottom: 18px;
+    right: 32px;
     font-size: 10px;
     letter-spacing: 0.2em;
     color: var(--muted);
+  }
+
+  /* Center spread: drop the doubled border at the spine so the two
+     leaves read as one surface, and add a subtle gutter shadow.
+     Classes are assigned by book.js only when two pages are visible. */
+  .page--left { border-right: none; }
+  .page--right { border-left: none; }
+
+  .page--left::after,
+  .page--right::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 34px;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .page--left::after {
+    right: 0;
+    background: linear-gradient(to right, transparent, rgba(28, 26, 23, 0.09));
+  }
+
+  .page--right::after {
+    left: 0;
+    background: linear-gradient(to left, transparent, rgba(28, 26, 23, 0.09));
   }
 
   /* hard covers */
@@ -856,11 +891,17 @@
   .page .section-title { font-size: 34px; }
 
   .page-desc {
-    font-size: 12px;
-    color: var(--muted);
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 15px;
+    color: #000;
     line-height: 1.6;
-    margin-bottom: 18px;
+    margin-bottom: 26px;
   }
+
+  .page .tab-pane h4 { margin-bottom: 12px; }
+  .page .tab-pane p { margin-bottom: 14px; }
+  .colophon-title { margin-bottom: 14px; }
 
   .page-body {
     flex: 1;
@@ -910,13 +951,35 @@
     font-size: 12px;
     line-height: 1.7;
     color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .colophon-list strong { color: var(--ink); }
 
+  /* accordion */
+  .page .accordion-header { padding: 12px 16px; font-size: 13px; }
+  .page .accordion-icon { font-size: 18px; }
+  .page .accordion-body { padding: 14px 16px; }
+
   /* filter */
   .page .filter-btn { padding: 8px 14px; font-size: 10px; }
-  .page .portfolio-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .page .portfolio-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .page .portfolio-item {
+    aspect-ratio: auto;
+    flex-direction: row;
+    padding: 12px 16px;
+    flex: 1 1 auto;
+    justify-content: flex-start;
+  }
+  .page .portfolio-item .item-icon {
+    font-size: 18px;
+  }
 
   /* search */
   .page #search-input { padding: 10px 14px; margin-bottom: 12px; }
@@ -925,6 +988,28 @@
   /* tabs */
   .page .tab-btn { padding: 10px 14px; font-size: 11px; }
   .page .tab-pane { font-size: 13px; }
+  .page[data-section="experience"] .page-desc {
+    color: var(--ink);
+    font-style: normal;
+  }
+  .page[data-section="experience"] .tab-pane {
+    font-family: 'Fraunces', serif;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .page[data-section="experience"] .tab-pane ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 10px;
+  }
+  .page[data-section="experience"] .tab-pane h4 {
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1.25;
+    margin-bottom: 14px;
+  }
+  .page[data-section="experience"] .tab-pane li + li { margin-top: 8px; }
 
   /* slider */
   .page .slide { padding: 32px 28px; }
