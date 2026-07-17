@@ -20,7 +20,10 @@
     <nav class="toc-links">
       <a data-page="0" class="active">Cover</a>
       <a data-page="1">Placeholder</a>
-      <a data-page="3">Back Cover</a>
+      <a data-page="2">01 · Stats</a>
+      <a data-page="3">03 · Contact</a>
+      <a data-page="4">06 · Workflow</a>
+      <a data-page="5">Back Cover</a>
     </nav>
     <span class="toc-foot">Senior Front-end Engineer<br>Lagos, Nigeria</span>
   </aside>
@@ -46,15 +49,119 @@
     <span class="page-num">01</span>
   </div>
 </div>
-<!-- TEMP placeholder page (removed in bullet 3) -->
-<div class="page" data-section="placeholder-2">
+<!-- ANIMATED COUNTERS -->
+<div class="page" data-section="stats">
   <div class="page-inner">
     <div class="page-header">
-      <span class="section-num">00</span>
-      <h2 class="section-title">Placeholder Two</h2>
+      <span class="section-num">01</span>
+      <h2 class="section-title">Key Stats</h2>
     </div>
-    <p>Second dummy page — keeps the page count even so spreads line up.</p>
-    <span class="page-num">02</span>
+    <p class="page-desc">Core metrics from my career.</p>
+    <div class="page-body">
+      <div class="counters-grid">
+        <div class="counter-box">
+          <span class="counter-num" data-target="148">0</span>
+          <span class="counter-label">Projects Delivered</span>
+        </div>
+        <div class="counter-box">
+          <span class="counter-num" data-target="3200000">0</span>
+          <span class="counter-label">Users Reached</span>
+        </div>
+        <div class="counter-box">
+          <span class="counter-num" data-target="99">0</span>
+          <span class="counter-label">Client Satisfaction %</span>
+        </div>
+        <div class="counter-box">
+          <span class="counter-num" data-target="12">0</span>
+          <span class="counter-label">Years Experience</span>
+        </div>
+      </div>
+      <button class="btn btn-filled" id="trigger-counter">↺ Replay Animation</button>
+    </div>
+    <span class="page-num">01</span>
+  </div>
+</div>
+<!-- AJAX FORM -->
+<div class="page" data-section="contact">
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Get in Touch</h2>
+    </div>
+    <p class="page-desc">Have a project in mind? Tell me about it.</p>
+    <div class="page-body">
+      <div class="ajax-form" id="contact-form">
+        <div class="form-field" id="ff-name">
+          <label>Full Name</label>
+          <input type="text" id="f-name" placeholder="Ada Okafor">
+          <span class="error-msg">Name must be at least 3 characters.</span>
+        </div>
+        <div class="form-field" id="ff-email">
+          <label>Email Address</label>
+          <input type="email" id="f-email" placeholder="ada@example.com">
+          <span class="error-msg">Please enter a valid email.</span>
+        </div>
+        <div class="form-field" id="ff-service">
+          <label>Service Needed</label>
+          <select id="f-service">
+            <option value="">— Select —</option>
+            <option>Web Development</option>
+            <option>Mobile App</option>
+            <option>UI/UX Design</option>
+            <option>Consulting</option>
+          </select>
+          <span class="error-msg">Please choose a service.</span>
+        </div>
+        <div class="form-field" id="ff-msg">
+          <label>Message</label>
+          <textarea id="f-msg" rows="3" placeholder="Tell me about your project..."></textarea>
+          <span class="error-msg">Message must be at least 20 characters.</span>
+        </div>
+        <div>
+          <button class="btn btn-filled" id="submit-btn">Send Message →</button>
+          <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+        <div class="form-feedback" id="form-feedback"></div>
+      </div>
+    </div>
+    <span class="page-num">03</span>
+  </div>
+</div>
+<!-- DRAG & DROP KANBAN -->
+<div class="page" data-section="workflow">
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Workflow</h2>
+    </div>
+    <p class="page-desc">An agile board you can rearrange yourself.</p>
+    <div class="page-body">
+      <div class="kanban">
+        <div class="kanban-col">
+          <div class="kanban-col-header">Backlog <span class="col-count" id="cnt-backlog">3</span></div>
+          <div class="kanban-list" id="col-backlog">
+            <div class="kanban-card"><div class="kanban-card-title">Setup CI/CD pipeline</div><span class="kanban-card-tag">DevOps</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">Write API docs</div><span class="kanban-card-tag">Docs</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">Accessibility audit</div><span class="kanban-card-tag">QA</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-col-header">In Progress <span class="col-count" id="cnt-progress">2</span></div>
+          <div class="kanban-list" id="col-progress">
+            <div class="kanban-card"><div class="kanban-card-title">Build auth module</div><span class="kanban-card-tag">Backend</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">Design system tokens</div><span class="kanban-card-tag">Design</span></div>
+          </div>
+        </div>
+        <div class="kanban-col">
+          <div class="kanban-col-header">Done <span class="col-count" id="cnt-done">2</span></div>
+          <div class="kanban-list" id="col-done">
+            <div class="kanban-card"><div class="kanban-card-title">Project kickoff</div><span class="kanban-card-tag">Planning</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">Wireframes approved</div><span class="kanban-card-tag">Design</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="page-num">06</span>
   </div>
 </div>
 <!-- BACK COVER (hard) -->
@@ -76,5 +183,8 @@
 <div id="toast-container"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 <script src="js/utils/toast.js"></script>
 <script src="js/components/book.js"></script>
+<script src="js/components/counters.js"></script>
+<script src="js/components/form.js"></script>
+<script src="js/components/kanban.js"></script>
 </body>
 </html>

@@ -17,8 +17,9 @@ function animateCounters() {
 }
 
 var counterFired = false;
-$(window).on('scroll', function () {
-  if (!counterFired && $('#s1').offset().top < $(window).scrollTop() + $(window).height() - 100) {
+// Fired by book.js whenever the visible spread changes
+$(document).on('book:pagevisible', function (e, sections) {
+  if (!counterFired && sections.indexOf('stats') !== -1) {
     counterFired = true;
     animateCounters();
   }

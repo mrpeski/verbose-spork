@@ -30,7 +30,7 @@ HTML
 cat portfolio/components/shell-open.html >>"$OUT"
 
 # Book pages, in reading order
-for comp in cover placeholder placeholder-2 back-cover; do
+for comp in cover placeholder counters form kanban back-cover; do
   cat "portfolio/components/${comp}.html" >>"$OUT"
 done
 
@@ -43,6 +43,9 @@ cat >>"$OUT" <<'JS'
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 <script src="js/utils/toast.js"></script>
 <script src="js/components/book.js"></script>
+<script src="js/components/counters.js"></script>
+<script src="js/components/form.js"></script>
+<script src="js/components/kanban.js"></script>
 </body>
 </html>
 JS

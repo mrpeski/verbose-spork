@@ -851,3 +851,34 @@
   /* mobile hamburger + scrim (drawer behavior finalized in bullet 4) */
   #menu-toggle { display: none; }
   #sidebar-scrim { display: none; }
+
+  /* ── PAGE-SCOPED COMPACTION ── */
+  .page .section-title { font-size: 34px; }
+
+  .page-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+
+  .page-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 8px;
+  }
+
+  .page .counters-grid { grid-template-columns: 1fr 1fr; }
+  .page .counter-box { padding: 24px 16px; }
+  .page .counter-num { font-size: 44px; }
+  .page #trigger-counter { margin-top: 20px; }
+
+  .page .ajax-form { gap: 10px; max-width: none; }
+  .page .form-field input,
+  .page .form-field textarea,
+  .page .form-field select { padding: 8px 12px; }
+
+  .page .kanban { gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .page .kanban-card { padding: 10px 12px; }
+  .page .kanban-card-title { font-size: 12px; }
