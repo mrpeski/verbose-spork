@@ -718,6 +718,52 @@
     font-variant-numeric: tabular-nums;
   }
 
+  .autoflip-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-11);
+    letter-spacing: 0.2em;
+    color: var(--cream);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .autoflip-label input[type="checkbox"] {
+    appearance: none;
+    width: 16px; height: 16px;
+    margin: 0;
+    border: 2px solid var(--acid);
+    background: transparent;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+  }
+
+  .autoflip-label input[type="checkbox"]:checked { background: var(--acid); }
+
+  .autoflip-interval {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-11);
+    letter-spacing: 0.2em;
+    color: var(--cream);
+  }
+
+  #autoflip-interval {
+    width: 64px;
+    padding: 4px 6px;
+    border: 2px solid var(--acid);
+    background: transparent;
+    color: var(--cream);
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  #autoflip-interval:focus { outline: 2px solid var(--acid); outline-offset: 2px; }
+
   /* ── PAGES ── */
   /* StPageFlip wraps each .page in its own .stf__item and owns all
      positioning/transforms — never add margins or position here. */

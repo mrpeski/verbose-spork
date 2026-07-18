@@ -210,6 +210,45 @@ $(document).on('keydown', function (e) {
   if (e.key === 'ArrowRight') { flipSeq++; setFlipSpeed(FLIP_MS); flipNextPage(); }
 });
 
+// Auto-flip: while the checkbox is on, advance a spread every N ms
+// (N from the interval input, floored so a flip can finish before the
+// next one starts). Stops itself on reaching the back cover.
+var autoFlipTimer = null;
+
+function autoFlipDelay() {
+  var ms = parseInt($('#autoflip-interval').val(), 10);
+  return isNaN(ms) ? 600 : Math.max(ms, FLIP_MS + 50);
+}
+
+function stopAutoFlip() {
+  clearInterval(autoFlipTimer);
+  autoFlipTimer = null;
+  $('#autoflip-toggle').prop('checked', false);
+}
+
+function startAutoFlip() {
+  clearInterval(autoFlipTimer);
+  autoFlipTimer = setInterval(function () {
+    var last = pageFlip.getPageCount() - 1;
+    if (visibleIndices(pageFlip.getCurrentPageIndex()).indexOf(last) !== -1) {
+      stopAutoFlip();
+      return;
+    }
+    flipSeq++; // cancel any TOC walk so the two don't fight
+    setFlipSpeed(FLIP_MS);
+    flipNextPage();
+  }, autoFlipDelay());
+}
+
+$('#autoflip-toggle').on('change', function () {
+  if (this.checked) startAutoFlip(); else stopAutoFlip();
+});
+
+// Retune a running timer when the interval changes
+$('#autoflip-interval').on('change', function () {
+  if (autoFlipTimer) startAutoFlip();
+});
+
 // Mobile drawer
 $('#menu-toggle').on('click', function () { $('.sidebar').addClass('open'); });
 $('#sidebar-scrim').on('click', function () { $('.sidebar').removeClass('open'); });
