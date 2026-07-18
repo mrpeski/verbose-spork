@@ -1,3 +1,5 @@
+$('.accordion-item').first().addClass('open').find('.accordion-body').show();
+
 $('.accordion-header').on('click', function () {
   var $item = $(this).closest('.accordion-item');
   var isOpen = $item.hasClass('open');

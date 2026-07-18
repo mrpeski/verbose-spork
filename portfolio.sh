@@ -30,7 +30,7 @@ HTML
 cat portfolio/components/shell-open.html >>"$OUT"
 
 # Book pages, in reading order
-for comp in cover intro counters filter form accordion-1 accordion-2 search kanban tabs slider back-cover; do
+for comp in cover intro counters filter form accordion search kanban tabs slider back-cover; do
   cat "portfolio/components/${comp}.html" >>"$OUT"
 done
 

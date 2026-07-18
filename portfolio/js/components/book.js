@@ -85,8 +85,13 @@ function syncBookUI(idx) {
   var pages = $('#book .page');
   var visibleIdx = visibleIndices(idx);
 
+  // Covers are uncounted: inner pages are numbered 1..total-2 (index == folio).
+  var innerTotal = total - 2;
+  var folios = visibleIdx.filter(function (i) { return i > 0 && i < total - 1; });
   $('#page-indicator').text(
-    visibleIdx.map(function (i) { return i + 1; }).join('–') + ' / ' + total
+    folios.length
+      ? folios.join('–') + ' / ' + innerTotal
+      : (visibleIdx[0] === 0 ? 'Cover' : 'Back cover')
   );
 
   // Spine treatment only applies to a real two-page spread
@@ -111,6 +116,12 @@ function syncBookUI(idx) {
 pageFlip.on('flip', function (e) { syncBookUI(e.data); });
 pageFlip.on('changeOrientation', function () { syncBookUI(); });
 syncBookUI();
+
+// Open the magazine on arrival: flip past the cover to the first spread,
+// unless the visitor has already started reading on their own.
+setTimeout(function () {
+  if (pageFlip.getCurrentPageIndex() === 0) flipNextPage();
+}, 500);
 
 // TOC navigation
 $('#toc a[data-page]').on('click', function () {
