@@ -582,7 +582,7 @@
     position: fixed;
     top: 12px;
     left: 12px;
-    z-index: 330;
+    z-index: 300;
     width: 44px;
     height: 44px;
     background: var(--ink);
