@@ -40,8 +40,29 @@ var interactiveSelector = [
 // so mutating it retunes the very next flip.
 function setFlipSpeed(ms) { pageFlip.getSettings().flippingTime = ms; }
 
-function flipNextPage() { pageFlip.flipNext(FLIP_CORNER); }
-function flipPrevPage() { pageFlip.flipPrev(FLIP_CORNER); }
+// Dress the incoming spread (spine borders, folio side) before the leaf
+// starts turning. The 'flip' event only fires when the animation lands,
+// so without this the newly revealed page visibly snapped into its
+// spread styling a beat after settling. Old classes are left in place —
+// syncBookUI clears them on landing, and mid-flight overlap is harmless.
+function primeSpread(target) {
+  var vis = visibleIndices(target);
+  if (vis.length !== 2) return;
+  var pages = $('#book .page');
+  pages.eq(vis[0]).addClass('page--left');
+  pages.eq(vis[1]).addClass('page--right');
+}
+
+function flipNextPage() {
+  var step = pageFlip.getOrientation() === 'landscape' ? 2 : 1;
+  primeSpread(Math.min(pageFlip.getCurrentPageIndex() + step, pageFlip.getPageCount() - 1));
+  pageFlip.flipNext(FLIP_CORNER);
+}
+function flipPrevPage() {
+  var step = pageFlip.getOrientation() === 'landscape' ? 2 : 1;
+  primeSpread(Math.max(pageFlip.getCurrentPageIndex() - step, 0));
+  pageFlip.flipPrev(FLIP_CORNER);
+}
 
 $('.page').on('mousedown touchstart pointerdown click', interactiveSelector, function(e) {
   e.stopPropagation();

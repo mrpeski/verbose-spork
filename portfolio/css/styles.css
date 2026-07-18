@@ -576,11 +576,19 @@
 
   #book { width: 100%; max-width: 1100px; }
 
+  /* Reserve the book's final height before StPageFlip initialises
+     (it adds .stf__parent on init) so the page doesn't jump on load. */
+  #book:not(.stf__parent) { aspect-ratio: 1100 / 720; }
+
   .book-controls {
     display: flex;
     align-items: center;
     gap: 16px;
     margin-top: 18px;
+    /* The stf__wrapper's aspect-ratio padding can extend over this row;
+       lift the controls so the arrows stay clickable. */
+    position: relative;
+    z-index: 10;
   }
 
   .flip-btn {
@@ -600,6 +608,11 @@
     font-size: 11px;
     letter-spacing: 0.2em;
     color: var(--cream);
+    /* Fixed footprint: "Cover" vs "9–10 / 10" vs "Back cover" must not
+       resize the row, or the centered arrows shift on every flip. */
+    min-width: 96px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
   }
 
   /* ── PAGES ── */
@@ -609,13 +622,12 @@
     background: var(--cream);
     border: 2px solid var(--ink);
     overflow: hidden;
-    content-visibility: auto;
-    contain-intrinsic-size: auto 550px auto 720px;
-  }
-  @supports not (content-visibility: auto) {
-    .page {
-      contain: layout style paint;
-    }
+    /* Isolate each page's internal layout (accordion slides, counter
+       animations) so it can't reflow the book. StPageFlip already hides
+       off-screen pages with display:none, so content-visibility added
+       nothing here — and its intrinsic-size guess never matched the real
+       page height, which showed up as a resize when pages flipped in. */
+    contain: layout style paint;
   }
 
   .page-inner {
@@ -652,8 +664,12 @@
   /* Center spread: drop the doubled border at the spine so the two
      leaves read as one surface, and add a subtle gutter shadow.
      Classes are assigned by book.js only when two pages are visible. */
-  .page--left { border-right: none; }
-  .page--right { border-left: none; }
+  /* Transparent (not none): dropping the border entirely changes the
+     content box by 2px, so page text jiggled every time these classes
+     were swapped. Transparent keeps geometry identical — the cream
+     background shows through, which reads the same as no border. */
+  .page--left { border-right-color: transparent; }
+  .page--right { border-left-color: transparent; }
 
   .page--left::after,
   .page--right::after {
@@ -782,6 +798,9 @@
     .sidebar.open { transform: translateX(0); }
 
     .book-area { padding: 60px 10px 12px; }
+
+    /* Portrait mode shows a single page — different pre-init ratio */
+    #book:not(.stf__parent) { aspect-ratio: 550 / 720; }
   }
 
   /* ── PAGE-SCOPED COMPACTION ── */
