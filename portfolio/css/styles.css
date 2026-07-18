@@ -582,7 +582,7 @@
     position: fixed;
     top: 12px;
     left: 12px;
-    z-index: 300;
+    z-index: 330;
     width: 44px;
     height: 44px;
     background: var(--ink);
@@ -810,7 +810,7 @@
   .back-inner { align-items: flex-start; }
 
   /* ── MOBILE: hamburger + slide-out TOC drawer ── */
-  #menu-toggle { display: none; }
+  /* #menu-toggle { display: none; } */
   #sidebar-scrim { display: none; }
 
   @media (max-width: 768px) {
