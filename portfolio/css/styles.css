@@ -81,6 +81,10 @@
     color: var(--ink);
     font-family: 'DM Mono', monospace;
     overflow-x: hidden;
+    /* Kill double-tap-to-zoom (quick taps while swiping the book zoomed
+       the page) but keep pinch-zoom for accessibility — a viewport meta
+       lock would disable both, and iOS partially ignores it anyway. */
+    touch-action: manipulation;
   }
 
   /* ── NOISE OVERLAY ── */
