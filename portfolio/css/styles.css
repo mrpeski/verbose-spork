@@ -671,30 +671,44 @@
   .page--left { border-right-color: transparent; }
   .page--right { border-left-color: transparent; }
 
-  .page--left::after,
-  .page--right::after {
+  /* Gutter shadow, drawn once on the book block rather than per page:
+     page-level overlays are clipped by .page's overflow:hidden, so they
+     could never cover the transparent border strip or the mitred border
+     corners — which left a light spine line poking past the book
+     outline. The first two gradients re-stitch the ink outline across
+     the spine at top and bottom; the third is the gutter shade. */
+  .stf__block::after {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 34px;
+    left: 50%;
+    width: 72px;
+    transform: translateX(-50%);
     pointer-events: none;
-    z-index: 5;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.2s;
+    background:
+      linear-gradient(to bottom, var(--ink) 2px, transparent 2px),
+      linear-gradient(to top, var(--ink) 2px, transparent 2px),
+      linear-gradient(to right, transparent, rgba(28, 26, 23, 0.09) 46%, rgba(28, 26, 23, 0.09) 54%, transparent);
   }
 
-  .page--left::after {
-    right: 0;
-    background: linear-gradient(to right, transparent, rgba(28, 26, 23, 0.09));
-  }
+  #book.book--spread .stf__block::after { opacity: 1; }
 
-  .page--right::after {
-    left: 0;
-    background: linear-gradient(to left, transparent, rgba(28, 26, 23, 0.09));
-  }
+  /* StPageFlip draws opaque shadow bands (.stf__hardShadow/.stf__hardInnerShadow)
+     along the spine during hard-page (cover) flips. Against the dark backdrop they
+     read as a gap between the turning leaf and the spine. Soft pages shade
+     themselves differently and are unaffected. */
+  .stf__hardShadow,
+  .stf__hardInnerShadow { opacity: 0 !important; }
 
   /* hard covers */
   .page[data-density="hard"] {
-    background: var(--ink);
+    background:
+      linear-gradient(to right, rgba(240,235,226,0.28), rgba(240,235,226,0.08) 30px, transparent 70px),
+      var(--ink);
     color: var(--cream);
     border-color: var(--ink);
   }

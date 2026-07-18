@@ -1,5 +1,30 @@
 /* Flipbook engine + TOC sync (StPageFlip) */
-var pageFlip = new St.PageFlip(document.getElementById('book'), {
+var bookEl = document.getElementById('book');
+
+// Fit #book so StPageFlip's block is exactly two pages wide (one in
+// portrait). With size:'stretch' the engine derives page size from the
+// available height when that's the tighter constraint, then centres the
+// resting pages inside the leftover block width — but it still animates
+// flips against the block's half-width, so a turning leaf hovered short
+// of the spine and snapped across the gap on landing.
+function sizeBook() {
+  var area = document.querySelector('.book-area');
+  var controls = document.querySelector('.book-controls');
+  var cs = getComputedStyle(area);
+  var availW = Math.min(
+    area.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight),
+    1100
+  );
+  var availH = area.clientHeight
+    - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)
+    - controls.offsetHeight - 18; // 18 = .book-controls margin-top
+  var pageW = Math.min(availW / 2, availH * 550 / 720);
+  var w = pageW * 2;
+  if (w < 630) w = Math.min(availW, availH * 550 / 720); // portrait: single page
+  bookEl.style.width = Math.max(315, Math.floor(w)) + 'px';
+}
+
+var pageFlip = new St.PageFlip(bookEl, {
   width: 550,
   height: 720,
   size: 'stretch',
@@ -18,6 +43,11 @@ var pageFlip = new St.PageFlip(document.getElementById('book'), {
 });
 
 pageFlip.loadFromHTML(document.querySelectorAll('#book .page'));
+
+// StPageFlip resets #book's inline width to 100% during init, so the
+// fit must be applied after it and re-measured.
+sizeBook();
+pageFlip.getUI().update();
 
 var FLIP_MS = 300; // keep in sync with flippingTime above
 var FLIP_CORNER = 'bottom';
@@ -51,6 +81,8 @@ function primeSpread(target) {
   var pages = $('#book .page');
   pages.eq(vis[0]).addClass('page--left');
   pages.eq(vis[1]).addClass('page--right');
+  // Skip early spread class when starting from cover (left half is empty backdrop)
+  if (pageFlip.getCurrentPageIndex() !== 0) $('#book').addClass('book--spread');
 }
 
 function flipNextPage() {
@@ -116,6 +148,7 @@ function syncBookUI(idx) {
   );
 
   // Spine treatment only applies to a real two-page spread
+  $('#book').toggleClass('book--spread', visibleIdx.length === 2);
   pages.removeClass('page--left page--right');
   if (visibleIdx.length === 2) {
     pages.eq(visibleIdx[0]).addClass('page--left');
@@ -138,10 +171,25 @@ pageFlip.on('flip', function (e) { syncBookUI(e.data); });
 pageFlip.on('changeOrientation', function () { syncBookUI(); });
 syncBookUI();
 
+// Re-fit on resize. StPageFlip's own resize listener was attached first
+// and reads the block before our width lands, so nudge its UI update
+// afterwards to make it re-measure.
+$(window).on('resize', function () {
+  sizeBook();
+  pageFlip.getUI().update();
+});
+
 // Open the magazine on arrival: flip past the cover to the first spread,
-// unless the visitor has already started reading on their own.
+// unless the visitor has already started reading on their own. The flip
+// runs slower than a reader-initiated one — at 300ms the cover pops to a
+// visible angle on its very first frame, which reads as a jump when
+// nothing prompted it.
+var OPEN_MS = 900;
 setTimeout(function () {
-  if (pageFlip.getCurrentPageIndex() === 0) flipNextPage();
+  if (pageFlip.getCurrentPageIndex() !== 0) return;
+  setFlipSpeed(OPEN_MS);
+  flipNextPage();
+  setTimeout(function () { setFlipSpeed(FLIP_MS); }, OPEN_MS + 50);
 }, 500);
 
 // TOC navigation
