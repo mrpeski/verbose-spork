@@ -200,8 +200,6 @@
     font-size: var(--fs-11);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s;
     position: relative; overflow: hidden;
   }
 
@@ -211,8 +209,6 @@
   .portfolio-item[data-cat="mobile"] { background: #fdf2e8; }
   .portfolio-item[data-cat="design"] { background: #f0fde8; }
   .portfolio-item[data-cat="data"] { background: #fde8f4; }
-
-  .portfolio-item:hover { transform: scale(1.04); box-shadow: 4px 4px 0 var(--ink); }
 
   /* ── 3. AJAX FORM ── */
   .ajax-form { display: grid; gap: 16px; max-width: 480px; }
@@ -322,10 +318,7 @@
     padding: 16px 20px;
     border: 2px solid var(--border);
     display: flex; align-items: center; gap: 16px;
-    transition: all 0.2s;
   }
-
-  .search-result-item:hover { border-color: var(--ink); transform: translateX(4px); }
 
   .result-icon {
     width: 36px; height: 36px;
