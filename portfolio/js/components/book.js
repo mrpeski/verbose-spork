@@ -70,6 +70,37 @@ var interactiveSelector = [
 // so mutating it retunes the very next flip.
 function setFlipSpeed(ms) { pageFlip.getSettings().flippingTime = ms; }
 
+// Direction-matched page-turn sounds. Small pools so rapid TOC riffles
+// overlap instead of cutting each other off. Play attempts before the
+// first user gesture (the auto-open flip) are blocked by autoplay
+// policy — the catch swallows that rejection.
+function makeSoundPool(src) {
+  var pool = [], i = 0;
+  for (var n = 0; n < 3; n++) {
+    var a = new Audio(src);
+    a.preload = 'auto';
+    a.volume = 0.7;
+    pool.push(a);
+  }
+  return function () {
+    var a = pool[i++ % pool.length];
+    a.currentTime = 0;
+    var p = a.play();
+    if (p && p.catch) p.catch(function () {});
+  };
+}
+// Both directions use the backward-flip sound for now (preferred by ear);
+// swap 'next' back to flip-forward.mp3 to restore direction-matched audio.
+var flipSounds = {
+  next: makeSoundPool('sounds/flip-backward.mp3'),
+  prev: makeSoundPool('sounds/flip-backward.mp3')
+};
+var lastFlipSoundAt = 0;
+function playFlipSound(dir) {
+  lastFlipSoundAt = Date.now();
+  flipSounds[dir]();
+}
+
 // Dress the incoming spread (spine borders, folio side) before the leaf
 // starts turning. The 'flip' event only fires when the animation lands,
 // so without this the newly revealed page visibly snapped into its
@@ -85,14 +116,29 @@ function primeSpread(target) {
   if (pageFlip.getCurrentPageIndex() !== 0) $('#book').addClass('book--spread');
 }
 
+// Sound only when the engine actually starts a flip. Predicting from the
+// page index is unreliable (e.g. portrait mode refuses the flip onto the
+// back cover while the index still looks flippable), so the queued
+// direction only sounds when 'changeState' reports the animation began —
+// a refused flip at the cover/back cover stays silent.
+var pendingFlipDir = null, pendingFlipAt = 0;
+function queueFlipSound(dir) { pendingFlipDir = dir; pendingFlipAt = Date.now(); }
+pageFlip.on('changeState', function (e) {
+  if (e.data !== 'flipping') return;
+  if (pendingFlipDir && Date.now() - pendingFlipAt < 300) playFlipSound(pendingFlipDir);
+  pendingFlipDir = null;
+});
+
 function flipNextPage() {
   var step = pageFlip.getOrientation() === 'landscape' ? 2 : 1;
   primeSpread(Math.min(pageFlip.getCurrentPageIndex() + step, pageFlip.getPageCount() - 1));
+  queueFlipSound('next');
   pageFlip.flipNext(FLIP_CORNER);
 }
 function flipPrevPage() {
   var step = pageFlip.getOrientation() === 'landscape' ? 2 : 1;
   primeSpread(Math.max(pageFlip.getCurrentPageIndex() - step, 0));
+  queueFlipSound('prev');
   pageFlip.flipPrev(FLIP_CORNER);
 }
 
@@ -167,7 +213,18 @@ function syncBookUI(idx) {
   $(document).trigger('book:pagevisible', [visible]);
 }
 
-pageFlip.on('flip', function (e) { syncBookUI(e.data); });
+// Drag/swipe flips never pass through flipNextPage/flipPrevPage, so
+// they'd be silent — catch them here on landing. The recency check
+// keeps programmatic flips (which already played at start) from
+// sounding twice.
+var lastFlipIndex = pageFlip.getCurrentPageIndex();
+pageFlip.on('flip', function (e) {
+  if (Date.now() - lastFlipSoundAt > 450 && e.data !== lastFlipIndex) {
+    playFlipSound(e.data > lastFlipIndex ? 'next' : 'prev');
+  }
+  lastFlipIndex = e.data;
+  syncBookUI(e.data);
+});
 pageFlip.on('changeOrientation', function () { syncBookUI(); });
 syncBookUI();
 

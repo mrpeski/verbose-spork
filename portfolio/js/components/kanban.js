@@ -18,16 +18,27 @@ $('.kanban-card').draggable({
   stop: function () { $(this).css('opacity', 1); }
 });
 
+// Category sounds escalate with the story a card tells: a soft tick into
+// Backlog, rising notes for In Progress, a full resolving chord for Done.
+// makeSoundPool comes from book.js (loaded first).
+var kanbanSounds = {
+  backlog: makeSoundPool('sounds/kanban-backlog.mp3'),
+  progress: makeSoundPool('sounds/kanban-progress.mp3'),
+  done: makeSoundPool('sounds/kanban-done.mp3')
+};
+
 $('.kanban-list').droppable({
   accept: '.kanban-card',
   hoverClass: 'ui-droppable-hover',
   drop: function (e, ui) {
     var $card = ui.draggable;
     var $list = $(this);
+    var changedColumn = $card.closest('.kanban-list').attr('id') !== $list.attr('id');
     $card.css({ top: 0, left: 0, opacity: 1 });
     $list.append($card);
     updateCounts();
     var colName = $list.attr('id').replace('col-', '');
+    if (changedColumn && kanbanSounds[colName]) kanbanSounds[colName]();
     showToast('Moved to ' + colName.charAt(0).toUpperCase() + colName.slice(1) + '!', '📌');
   }
 });
