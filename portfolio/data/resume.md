@@ -70,29 +70,53 @@ to propagate changes, rebuild, and publish.
 <!-- feeds: project-tabs.html (Featured Projects tabs — one card per project, under its Category tab) -->
 ## Projects
 
-### Lykdat Search
+### Pinsight
+
+- **Category:** AI/ML
+- **Skills:** React, Next.js, TypeScript, RAG Pipelines, REST
+- **Link:** https://pinsight.lykdat.com
+
+B2B fashion retail intelligence platform built as Senior Frontend Engineer — a multi-modal search interface across 50+ global brands, a product comparison page with sentiment charts, and a RAG-powered AI Assistant delivering insights from 14.6M+ reviews. Replaced 30+ field researchers at MAS Holdings, a global apparel manufacturer.
+
+### Lykdat
 
 - **Category:** Web
-- **Skills:** TypeScript, Next.js, React, Tailwind CSS
+- **Skills:** React, Razzle, Server-side Rendering (SSR), Internationalization, i18next
+- **Link:** https://lykdat.com
+
+Consumer-facing fashion discovery platform for image-based search across multiple retailers. Built and maintained the hero section, image search entry point, and product browsing UI across neutral, women's, and men's categories, plus multilingual/localized shopping support.
+
+### Woven Insights
+
+- **Category:** Web
+- **Skills:** React, Next.js, Framer, Payload CMS, Apollo
+- **Link:** https://woveninsights.ai
+
+Market intelligence platform for fashion professionals aggregating 506,000+ products, 305 retailers, and 8,800+ brands. Led end-to-end front-end development of the dashboard, filtering system, brands module, and forecasts, and migrated the marketing site from static Next.js to a self-manageable PayloadCMS build.
+
+### Discovery Trip
+
+- **Category:** Web
+- **Skills:** Laravel, PHP, Amadeus Web Services, HTML, CSS
+- **Link:** https://www.discoverytrip.net
+
+Full-featured travel booking platform built solo — back-end architecture through front-end UI — using Laravel and the Amadeus API for real-time flight, hotel, car, and cruise bookings. Live and serving customers across Nigeria for over 10 years.
+
+### Genesys Health
+
+- **Category:** Web
+- **Skills:** WordPress, PHP, Custom Themes, HTML5, CSS
+- **Link:** https://www.genesys-health.com
+
+Custom WordPress site built from scratch for a Lagos-based healthcare technology company, with a fully custom theme covering product showcases, demo videos, a request-a-demo form, and a news blog.
+
+### Vatebra Tech Hub
+
+- **Category:** Web
+- **Skills:** WordPress, WordPress Plugins, PHP, Custom Themes, WordPress Multisite
 - **Link:** TODO — add live URL
 
-Multi-modal fashion search interface supporting 50+ brands.
-
-### Lykdat AI Assistant
-
-- **Category:** AI/ML
-- **Skills:** RAG pipelines, Next.js API routes, OpenAI API, Claude API
-- **Link:** TODO — add live URL
-
-AI-Assistant powered by RAG pipeline, delivering context-aware answers from 106M+ reviews.
-
-### Aggregate Insights Dashboard
-
-- **Category:** AI/ML
-- **Skills:** Python, Pandas, React, Data Visualization
-- **Link:** TODO — add live URL
-
-Cross-brand insights page processing and visualizing sentiment, attribute, and ratings data across 553.7K+ products, 74 brands, and 106.2M customer reviews.
+Website for a tech innovation and co-working space, built with a clean, professional design supporting the brand's mission of nurturing Nigeria's tech ecosystem — live and actively maintained for over four years.
 
 ### K3s Production Recovery
 
@@ -110,12 +134,13 @@ Diagnosed and resolved a 45-day Kubernetes (K3s) API pod failure blocking backen
 
 A dozen interactive jQuery components assembled into a single page by a bash build script.
 
-### Mobile
+### LifeWORTH HMO Enrollee
 
 - **Category:** Mobile
-- **Skills:** React Native
+- **Skills:** React Native, Expo, App Submission, Lottie
+- **Link:** https://play.google.com/store/apps/details?id=com.lifeworthapps.enrollee
 
-No shipped mobile project yet — React Native experience so far, open to mobile work.
+Enrollee-facing mobile app for a Nigerian HMO, giving members a single place to manage their health plan — a searchable directory of accredited providers, a digital HMO ID card, real-time benefits and coverage tracking, and an authorization history screen. Also built and documented the supporting API; live on Google Play and the App Store.
 
 <!-- feeds: credentials.html (Education & Certifications) -->
 ## Education

@@ -1,19 +1,19 @@
+function applyFilter(filter, animate) {
+  $('.portfolio-item').each(function (i) {
+    var $item = $(this);
+    if ($item.data('cat') === filter) {
+      animate ? $item.delay(i * 30).fadeIn(200) : $item.show();
+    } else {
+      animate ? $item.fadeOut(150) : $item.hide();
+    }
+  });
+}
+
 $('.filter-btn').on('click', function () {
   var filter = $(this).data('filter');
   $('.filter-btn').removeClass('active');
   $(this).addClass('active');
-
-  if (filter === 'all') {
-    $('.portfolio-item').each(function (i) {
-      $(this).delay(i * 40).fadeIn(200);
-    });
-  } else {
-    $('.portfolio-item').each(function (i) {
-      if ($(this).data('cat') === filter) {
-        $(this).delay(i * 30).fadeIn(200);
-      } else {
-        $(this).fadeOut(150);
-      }
-    });
-  }
+  applyFilter(filter, true);
 });
+
+applyFilter($('.filter-btn.active').data('filter'), false);
