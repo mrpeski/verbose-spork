@@ -406,7 +406,7 @@
     margin-bottom: 32px;
   }
 
-  .tab-btn {
+  .tab-btn, .proj-tab-btn {
     padding: 14px 28px;
     font-family: 'DM Mono', monospace;
     font-size: var(--fs-12); letter-spacing: 0.1em;
@@ -420,12 +420,12 @@
     transition: background 0.2s;
   }
 
-  .tab-btn:first-child { border-left: 2px solid var(--ink); }
-  .tab-btn:hover { background: var(--acid); }
-  .tab-btn.active { background: var(--ink); color: var(--cream); border-bottom-color: var(--ink); }
+  .tab-btn:first-child, .proj-tab-btn:first-child { border-left: 2px solid var(--ink); }
+  .tab-btn:hover, .proj-tab-btn:hover { background: var(--acid); }
+  .tab-btn.active, .proj-tab-btn.active { background: var(--ink); color: var(--cream); border-bottom-color: var(--ink); }
 
-  .tab-pane { display: none; animation: fadeSlide 0.3s ease; }
-  .tab-pane.active { display: block; }
+  .tab-pane, .proj-tab-pane { display: none; animation: fadeSlide 0.3s ease; }
+  .tab-pane.active, .proj-tab-pane.active { display: block; }
 
   @keyframes fadeSlide {
     from { opacity: 0; transform: translateY(10px); }
@@ -474,48 +474,41 @@
   .code-snippet .fn { color: #c8f53e; }
   .code-snippet .st { color: #b8e0ff; }
 
-  /* slider */
-  .slider-wrap { overflow: hidden; border: 2px solid var(--ink); }
-  .slider-track { display: flex; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-  .slide {
-    min-width: 100%;
-    padding: 48px 40px;
-    background: var(--ink);
-    color: var(--cream);
-    display: flex; flex-direction: column;
-  }
-
-  .slide:nth-child(2n) { background: var(--steel); }
-  .slide-quote {
+  /* project tabs */
+  .proj-card { padding: 20px 0; border-bottom: 1px solid var(--ink); }
+  .proj-card:last-child { border-bottom: none; }
+  .proj-card h4 {
     font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-size: clamp(20px, 3vw, 30px);
-    font-weight: 300;
-    line-height: 1.4;
-    margin-bottom: 24px;
-    max-width: 600px;
+    font-size: var(--fs-17);
+    font-weight: 700;
+    margin-bottom: 8px;
   }
-
-  .slide-author { font-size: var(--fs-12); letter-spacing: 0.15em; text-transform: uppercase; color: var(--acid); }
-  .slider-controls { display: flex; gap: 8px; margin-top: 20px; }
-  .slider-btn {
-    width: 44px; height: 44px;
-    border: 2px solid var(--ink);
-    background: transparent;
-    font-size: var(--fs-18);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center;
+  .proj-card p { font-family: 'Fraunces', serif; line-height: 1.5; max-width: 640px; }
+  .proj-skills {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 12px;
   }
-  .slider-btn:hover { background: var(--ink); color: var(--cream); }
-  .slider-dots { display: flex; gap: 8px; align-items: center; margin-left: 16px; }
-  .dot {
-    width: 8px; height: 8px;
-    border: 2px solid var(--ink);
-    cursor: pointer;
-    transition: background 0.2s;
+  .skill-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-9);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    padding: 3px 8px;
   }
-  .dot.active { background: var(--ink); }
+  .proj-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-11);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 2px solid var(--acid);
+    transition: opacity 0.2s;
+  }
+  .proj-link:hover { opacity: 0.6; }
 
   /* ═══ FLIPBOOK SHELL ═══ */
   body { overflow: hidden; }
@@ -964,8 +957,8 @@
   .page .search-result-item { padding: 10px 14px; }
 
   /* tabs */
-  .page .tab-btn { padding: 10px 14px; font-size: var(--fs-11); }
-  .page .tab-pane { font-size: var(--fs-13); }
+  .page .tab-btn, .page .proj-tab-btn { padding: 10px 14px; font-size: var(--fs-11); }
+  .page .tab-pane, .page .proj-tab-pane { font-size: var(--fs-13); }
   .page[data-section="experience"] .page-desc {
     color: var(--ink);
     font-style: normal;
@@ -989,14 +982,13 @@
   }
   .page[data-section="experience"] .tab-pane li + li { margin-top: 8px; }
 
-  /* slider */
-  .page .slide { padding: 32px 28px; }
-  .page .slide-quote { font-size: var(--fs-17); }
+  /* project tabs */
+  .page .proj-card h4 { font-size: var(--fs-15); }
 
   /* ── MOBILE: component compaction inside portrait pages ── */
   @media (max-width: 768px) {
     .page .kanban { grid-template-columns: 1fr; }
     .page .kanban-list { min-height: 0; }
     .tab-nav { overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
-    .page .tab-btn { flex: 1 0 auto; white-space: nowrap; }
+    .page .tab-btn, .page .proj-tab-btn { flex: 1 0 auto; white-space: nowrap; }
   }

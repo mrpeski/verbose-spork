@@ -15,7 +15,15 @@ $('.kanban-card').draggable({
     ui.helper.css('width', $(this).outerWidth());
     $(this).css('opacity', 0.4);
   },
-  stop: function () { $(this).css('opacity', 1); }
+  stop: function () {
+    $(this).css('opacity', 1);
+    // drop() runs before stop(), so a missing flag means the card reverted.
+    if ($(this).data('dropped')) {
+      $(this).removeData('dropped');
+    } else {
+      kanbanSounds.revert();
+    }
+  }
 });
 
 // Category sounds escalate with the story a card tells: a soft tick into
@@ -24,7 +32,8 @@ $('.kanban-card').draggable({
 var kanbanSounds = {
   backlog: makeSoundPool('sounds/kanban-backlog.mp3'),
   progress: makeSoundPool('sounds/kanban-progress.mp3'),
-  done: makeSoundPool('sounds/kanban-done.mp3')
+  done: makeSoundPool('sounds/kanban-done.mp3'),
+  revert: makeSoundPool('sounds/kanban-revert.mp3')
 };
 
 $('.kanban-list').droppable({
@@ -32,6 +41,7 @@ $('.kanban-list').droppable({
   hoverClass: 'ui-droppable-hover',
   drop: function (e, ui) {
     var $card = ui.draggable;
+    $card.data('dropped', true);
     var $list = $(this);
     var changedColumn = $card.closest('.kanban-list').attr('id') !== $list.attr('id');
     $card.css({ top: 0, left: 0, opacity: 1 });

@@ -30,7 +30,7 @@ HTML
 cat portfolio/components/shell-open.html >>"$OUT"
 
 # Book pages, in reading order
-for comp in cover intro counters filter form accordion search kanban tabs slider back-cover; do
+for comp in cover intro counters filter form accordion search kanban tabs project-tabs credentials back-cover; do
   cat "portfolio/components/${comp}.html" >>"$OUT"
 done
 
@@ -50,7 +50,7 @@ cat >>"$OUT" <<'JS'
 <script src="js/components/search.js"></script>
 <script src="js/components/kanban.js"></script>
 <script src="js/components/tabs.js"></script>
-<script src="js/components/slider.js"></script>
+<script src="js/components/project-tabs.js"></script>
 </body>
 </html>
 JS
