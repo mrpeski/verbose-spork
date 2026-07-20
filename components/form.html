@@ -1,0 +1,46 @@
+<!-- AJAX FORM -->
+<div class="page" data-section="contact">
+  <div class="page-inner">
+    <div class="page-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Get in Touch</h2>
+    </div>
+    <p class="page-desc">Have a project in mind? Tell me about it.</p>
+    <div class="page-body">
+      <div class="ajax-form" id="contact-form">
+        <div class="form-field" id="ff-name">
+          <label>Full Name</label>
+          <input type="text" id="f-name" placeholder="Ada Okafor">
+          <span class="error-msg">Name must be at least 3 characters.</span>
+        </div>
+        <div class="form-field" id="ff-email">
+          <label>Email Address</label>
+          <input type="email" id="f-email" placeholder="ada@example.com">
+          <span class="error-msg">Please enter a valid email.</span>
+        </div>
+        <div class="form-field" id="ff-service">
+          <label>Service Needed</label>
+          <select id="f-service">
+            <option value="">— Select —</option>
+            <option>Web Development</option>
+            <option>Mobile App</option>
+            <option>UI/UX Design</option>
+            <option>Consulting</option>
+          </select>
+          <span class="error-msg">Please choose a service.</span>
+        </div>
+        <div class="form-field" id="ff-msg">
+          <label>Message</label>
+          <textarea id="f-msg" rows="3" placeholder="Tell me about your project..."></textarea>
+          <span class="error-msg">Message must be at least 20 characters.</span>
+        </div>
+        <div>
+          <button class="btn btn-filled" id="submit-btn">Send Message →</button>
+          <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+        <div class="form-feedback" id="form-feedback"></div>
+      </div>
+    </div>
+    <span class="page-num">4</span>
+  </div>
+</div>

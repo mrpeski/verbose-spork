@@ -1,0 +1,85 @@
+function updateCounts() {
+  $('#cnt-backlog').text($('#col-backlog .kanban-card').length);
+  $('#cnt-progress').text($('#col-progress .kanban-card').length);
+  $('#cnt-done').text($('#col-done .kanban-card').length);
+}
+
+$('.kanban-card').draggable({
+  revert: 'invalid',
+  helper: 'clone',
+  appendTo: 'body',
+  zIndex: 1000,
+  opacity: 0.85,
+  cursor: 'grabbing',
+  start: function (e, ui) {
+    ui.helper.css('width', $(this).outerWidth());
+    $(this).css('opacity', 0.4);
+  },
+  stop: function () {
+    $(this).css('opacity', 1);
+    // drop() runs before stop(), so a missing flag means the card reverted.
+    if ($(this).data('dropped')) {
+      $(this).removeData('dropped');
+    } else {
+      kanbanSounds.revert();
+    }
+  }
+});
+
+// Category sounds escalate with the story a card tells: a soft tick into
+// Backlog, rising notes for In Progress, a full resolving chord for Done.
+// makeSoundPool comes from book.js (loaded first).
+var kanbanSounds = {
+  backlog: makeSoundPool('sounds/kanban-backlog.mp3'),
+  progress: makeSoundPool('sounds/kanban-progress.mp3'),
+  done: makeSoundPool('sounds/kanban-done.mp3'),
+  revert: makeSoundPool('sounds/kanban-revert.mp3')
+};
+
+$('.kanban-list').droppable({
+  accept: '.kanban-card',
+  hoverClass: 'ui-droppable-hover',
+  drop: function (e, ui) {
+    var $card = ui.draggable;
+    $card.data('dropped', true);
+    var $list = $(this);
+    var changedColumn = $card.closest('.kanban-list').attr('id') !== $list.attr('id');
+    $card.css({ top: 0, left: 0, opacity: 1 });
+    $list.append($card);
+    updateCounts();
+    var colName = $list.attr('id').replace('col-', '');
+    if (changedColumn && kanbanSounds[colName]) kanbanSounds[colName]();
+    showToast('Moved to ' + colName.charAt(0).toUpperCase() + colName.slice(1) + '!', '📌');
+  }
+});
+
+// jQuery UI only listens for mouse events; translate touches so the board
+// is draggable on phones/tablets too.
+(function () {
+  if (!('ontouchstart' in window)) return;
+
+  function simulate(e, type) {
+    var touch = e.originalEvent.changedTouches[0];
+    var ev = new MouseEvent(type, {
+      bubbles: true, cancelable: true, view: window,
+      screenX: touch.screenX, screenY: touch.screenY,
+      clientX: touch.clientX, clientY: touch.clientY,
+      button: 0
+    });
+    e.target.dispatchEvent(ev);
+  }
+
+  $(document).on('touchstart', '.kanban-card', function (e) {
+    e.preventDefault();
+    simulate(e, 'mousedown');
+    $(document)
+      .on('touchmove.kanbanDrag', function (me) {
+        me.preventDefault();
+        simulate(me, 'mousemove');
+      })
+      .on('touchend.kanbanDrag touchcancel.kanbanDrag', function (ue) {
+        simulate(ue, 'mouseup');
+        $(document).off('.kanbanDrag');
+      });
+  });
+})();
