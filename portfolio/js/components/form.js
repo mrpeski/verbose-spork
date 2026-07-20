@@ -1,3 +1,10 @@
+// Fill these in from your EmailJS account (emailjs.com → Email Services /
+// Email Templates / Account → API Keys) before deploying.
+var EMAILJS_PUBLIC_KEY = 'Jq1Bou9RSDXSZzABH';
+var EMAILJS_SERVICE_ID = 'service_bbyqphe';
+var EMAILJS_TEMPLATE_ID = 'template_d2n3qg5';
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
 function validate() {
   var valid = true;
 
@@ -36,6 +43,11 @@ $('#submit-btn').on('click', function () {
     return;
   }
 
+  var name = $('#f-name').val().trim();
+  var email = $('#f-email').val().trim();
+  var service = $('#f-service').val();
+  var message = $('#f-msg').val().trim();
+
   var $btn = $(this).prop('disabled', true).text('Sending…');
   var $pb = $('#progress-bar').show();
   var $pf = $('#progress-fill');
@@ -48,7 +60,12 @@ $('#submit-btn').on('click', function () {
     $pf.css('width', pct + '%');
   }, 100);
 
-  setTimeout(function () {
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    name: name,
+    email: email,
+    service: service,
+    message: message
+  }).then(function () {
     clearInterval(interval);
     $pf.css('width', '100%');
     setTimeout(function () {
@@ -61,5 +78,14 @@ $('#submit-btn').on('click', function () {
       $('#contact-form input, #contact-form textarea, #contact-form select').val('');
       $('#contact-form .form-field').removeClass('has-error');
     }, 400);
-  }, 2200);
+  }).catch(function (err) {
+    clearInterval(interval);
+    $pb.hide(); $pf.css('width', '0%');
+    $fb.addClass('error')
+      .html('⚠️ Something went wrong — please try again or email me directly.')
+      .fadeIn(300);
+    $btn.prop('disabled', false).text('Send Message →');
+    showToast('Message failed to send.', '⚠️');
+    console.error('EmailJS send failed:', err);
+  });
 });
