@@ -21,7 +21,7 @@ function renderResults(term) {
   });
   $cnt.text(filtered.length + ' result' + (filtered.length !== 1 ? 's' : '') + (term ? ' for "' + term + '"' : ''));
   if (!filtered.length) {
-    $r.append('<p style="color:var(--muted);font-size:13px;padding:16px 0;">No skills matched.</p>');
+    $r.append('<p class="search-empty">No skills matched.</p>');
     return;
   }
   $.each(filtered, function (i, s) {

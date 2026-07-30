@@ -9,29 +9,42 @@
   --border: #e0ddd6;
 
   /* ── FLUID TYPE SCALE ──
-     Each step scales between a 360px and a 1280px viewport but keeps
-     its rank in the hierarchy — display sizes compress more than body
-     sizes so small labels never drop below legibility. Var names carry
-     the desktop (max) pixel size. */
-  --fs-9:   clamp(8px, 7.6px + 0.11vw, 9px);
-  --fs-10:  clamp(9px, 8.6px + 0.11vw, 10px);
-  --fs-11:  clamp(10px, 9.6px + 0.11vw, 11px);
-  --fs-12:  clamp(11px, 10.6px + 0.11vw, 12px);
-  --fs-13:  clamp(11.5px, 10.9px + 0.16vw, 13px);
-  --fs-14:  clamp(12.5px, 11.9px + 0.16vw, 14px);
-  --fs-15:  clamp(13px, 12.2px + 0.22vw, 15px);
-  --fs-16:  clamp(14px, 13.2px + 0.22vw, 16px);
-  --fs-17:  clamp(14.5px, 13.5px + 0.27vw, 17px);
-  --fs-18:  clamp(15.5px, 14.5px + 0.27vw, 18px);
-  --fs-19:  clamp(16px, 14.8px + 0.33vw, 19px);
-  --fs-20:  clamp(17px, 15.8px + 0.33vw, 20px);
+     Each step interpolates between a 375px and a 1280px viewport and
+     keeps its rank in the hierarchy. Var names carry the desktop (max)
+     pixel size.
+
+     Floors, not just ceilings, are part of the scale: nothing carrying
+     running text may resolve below 15px, and no label below 12px. The
+     old scale shrank instead — nine of twenty steps pinned under 14px at
+     375px, which put 11.5px body copy on Experience and 8px skill tags
+     on Projects. The four smallest steps now floor at their own ceiling,
+     so they are flat 12px; they stay as separate names because the
+     hierarchy still reads on desktop through weight and tracking. */
+  --fs-9:   12px;
+  --fs-10:  12px;
+  --fs-11:  12px;
+  --fs-12:  12px;
+  --fs-13:  clamp(12px, 11.59px + 0.11vw, 13px);
+  --fs-14:  clamp(13px, 12.59px + 0.11vw, 14px);
+  --fs-15:  15px;
+  --fs-16:  clamp(15px, 14.59px + 0.11vw, 16px);
+  --fs-17:  clamp(15.5px, 14.86px + 0.17vw, 17px);
+  --fs-18:  clamp(16px, 15.18px + 0.22vw, 18px);
+  --fs-19:  clamp(16.5px, 15.45px + 0.28vw, 19px);
+  --fs-20:  clamp(17px, 15.76px + 0.33vw, 20px);
   --fs-22:  clamp(18px, 16.4px + 0.43vw, 22px);
   --fs-28:  clamp(22px, 19.7px + 0.65vw, 28px);
   --fs-32:  clamp(25px, 22.3px + 0.76vw, 32px);
   --fs-34:  clamp(26px, 22.9px + 0.87vw, 34px);
   --fs-40:  clamp(30px, 26.1px + 1.09vw, 40px);
   --fs-44:  clamp(33px, 28.7px + 1.2vw, 44px);
+  /* Display ranks. --fs-60 and --fs-120 replace the two raw-vw clamps
+     that used to sit inline on .section-title and .cover-title; both
+     pinned to their hardcoded floor below 400px, so the fluidity was
+     fictional and the values escaped the scale entirely. */
+  --fs-60:  clamp(32px, 20.4px + 3.09vw, 60px);
   --fs-64:  clamp(46px, 39px + 1.96vw, 64px);
+  --fs-120: clamp(64px, 40.8px + 6.19vw, 120px);
   --fs-240: clamp(150px, 18.75vw, 240px);
 }
 
@@ -131,7 +144,7 @@
 
   .section-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(36px, 5vw, 60px);
+    font-size: var(--fs-60);
     line-height: 1;
   }
 
@@ -305,7 +318,8 @@
     background: #fafaf7;
     border-top: 2px solid var(--ink);
     font-family: 'Fraunces', serif;
-    font-size: var(--fs-14);
+    /* FAQ answers are running text — a reading-grade rank, not a label. */
+    font-size: var(--fs-15);
     line-height: 1.7;
     color: var(--steel);
   }
@@ -349,6 +363,13 @@
   #search-count {
     font-size: var(--fs-11); color: var(--muted);
     letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+
+  /* Was an inline font-size:13px injected by search.js */
+  .search-empty {
+    color: var(--muted);
+    font-size: var(--fs-14);
+    padding: 16px 0;
   }
 
   /* ── 6. DRAG & DROP ── */
@@ -425,7 +446,19 @@
     display: flex; gap: 0;
     border-bottom: 2px solid var(--ink);
     margin-bottom: 32px;
+    /* Five tabs do not fit the width of a magazine page at any viewport —
+       the last one used to wrap and clip against the page edge. Scroll
+       the row instead, and fade its trailing edge so it reads as
+       continuing rather than ending. */
+    overflow-x: auto;
+    max-width: 100%;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
   }
+
+  .tab-nav::-webkit-scrollbar { display: none; }
 
   .tab-btn, .proj-tab-btn {
     padding: 14px 28px;
@@ -439,6 +472,10 @@
     border-bottom: 2px solid var(--ink);
     margin-bottom: -2px;
     transition: background 0.2s;
+    /* Keep every label on one line and let the row scroll instead */
+    flex: 0 0 auto;
+    white-space: nowrap;
+    scroll-snap-align: start;
   }
 
   .tab-btn:first-child, .proj-tab-btn:first-child { border-left: 2px solid var(--ink); }
@@ -849,7 +886,7 @@
 
   .cover-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(64px, 9vw, 120px);
+    font-size: var(--fs-120);
     line-height: 0.9;
     color: var(--cream);
   }
@@ -1060,7 +1097,9 @@
 
   .colophon-list {
     list-style: none;
-    font-size: var(--fs-12);
+    /* Reading text — the credentials page renders its whole degree and
+       certification list through this class. */
+    font-size: var(--fs-15);
     line-height: 1.7;
     color: var(--muted);
     display: flex;
@@ -1098,7 +1137,9 @@
 
   /* tabs */
   .page .tab-btn, .page .proj-tab-btn { padding: 10px 14px; font-size: var(--fs-11); }
-  .page .tab-pane, .page .proj-tab-pane { font-size: var(--fs-13); }
+  /* Experience and Projects body copy — the largest block of running
+     text in the book, and previously the smallest type in it. */
+  .page .tab-pane, .page .proj-tab-pane { font-size: var(--fs-15); }
   .page[data-section="experience"] .page-desc {
     color: var(--ink);
     font-style: normal;
@@ -1129,21 +1170,7 @@
   @media (max-width: 767px) {
     .page .kanban { grid-template-columns: 1fr; }
     .page .kanban-list { min-height: 0; }
-    .page .tab-btn, .page .proj-tab-btn { flex: 1 0 auto; white-space: nowrap; }
-
-    /* The tab strip scrolls, but nothing said so — tabs 4 and 5 sat past
-       a hard edge that read as the end of the row. */
-    .tab-nav {
-      overflow-x: auto;
-      max-width: 100%;
-      -webkit-overflow-scrolling: touch;
-      scroll-snap-type: x proximity;
-      scrollbar-width: none;
-      -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
-      mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
-    }
-    .tab-nav::-webkit-scrollbar { display: none; }
-    .page .tab-btn, .page .proj-tab-btn { scroll-snap-align: start; }
+    .tab-nav { -webkit-overflow-scrolling: touch; }
   }
 
   /* ══ TOUCH TARGETS ══
