@@ -2,6 +2,12 @@ function animateCounters() {
   $('.counter-num').each(function () {
     var $el = $(this);
     var target = parseInt($el.data('target'));
+    // Reduced motion still wants the number, just not the two-second
+    // count-up to reach it.
+    if (PREFERS_REDUCED_MOTION) {
+      $el.text(target.toLocaleString());
+      return;
+    }
     $el.text('0');
     $({ value: 0 }).animate({ value: target }, {
       duration: 2000,

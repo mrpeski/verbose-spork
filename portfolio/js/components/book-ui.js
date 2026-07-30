@@ -19,11 +19,44 @@ var READER_MODE = window.matchMedia(READER_MOBILE_QUERY).matches ? 'snap' : 'fli
 // user to press the ← → buttons is wrong once they're hidden.
 document.documentElement.classList.add('reader-' + READER_MODE);
 
+// Visitors who ask their OS for less motion get a calmer document: no
+// unprompted auto-open flip, no counter tween, no page-turn audio.
+var PREFERS_REDUCED_MOTION =
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.documentElement.classList.toggle('reduced-motion', PREFERS_REDUCED_MOTION);
+
+// ── Audio ──
+// The book plays a page-turn sound on every flip. Unprompted audio with
+// no way to silence it is a liability on a portfolio, so the preference
+// is explicit, persisted, and defaults to muted under reduced motion.
+var Sound = (function () {
+  var KEY = 'portfolio:muted';
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) {}
+  var muted = stored === null ? PREFERS_REDUCED_MOTION : stored === '1';
+
+  function persist() {
+    try { localStorage.setItem(KEY, muted ? '1' : '0'); } catch (e) {}
+  }
+  function apply() {
+    $('#mute-toggle')
+      .attr('aria-pressed', String(muted))
+      .attr('aria-label', muted ? 'Unmute page sounds' : 'Mute page sounds')
+      .text(muted ? '🔇' : '🔊');
+  }
+  return {
+    isMuted: function () { return muted; },
+    toggle: function () { muted = !muted; persist(); apply(); return muted; },
+    sync: apply
+  };
+})();
+
 // Small sound pools so rapid TOC riffles overlap instead of cutting each
 // other off. Play attempts before the first user gesture (the auto-open
 // flip) are blocked by autoplay policy — the catch swallows that
 // rejection. Lives here rather than in a driver because kanban.js loads
-// after the book and calls it too.
+// after the book and calls it too; every pool checks the mute flag, so
+// callers never have to.
 function makeSoundPool(src) {
   var pool = [], i = 0;
   for (var n = 0; n < 3; n++) {
@@ -33,6 +66,7 @@ function makeSoundPool(src) {
     pool.push(a);
   }
   return function () {
+    if (Sound.isMuted()) return;
     var a = pool[i++ % pool.length];
     a.currentTime = 0;
     var p = a.play();
@@ -103,6 +137,10 @@ $(document).on('keydown', function (e) {
 // Mobile drawer
 $('#menu-toggle').on('click', function () { $('.sidebar').addClass('open'); });
 $('#sidebar-scrim').on('click', function () { $('.sidebar').removeClass('open'); });
+
+// Mute toggle (sidebar foot)
+$('#mute-toggle').on('click', function () { Sound.toggle(); });
+Sound.sync();
 
 // Crossing the breakpoint swaps the entire reader, and re-initialising
 // StPageFlip mid-session reliably mis-sizes the block. Reloading is the

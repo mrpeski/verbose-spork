@@ -203,6 +203,9 @@ $(window).on('resize', function () {
 // nothing prompted it.
 var OPEN_MS = 900;
 setTimeout(function () {
+  // Nothing prompted this flip, so it is exactly the kind of motion
+  // reduced-motion asks us not to start.
+  if (PREFERS_REDUCED_MOTION) return;
   if (pageFlip.getCurrentPageIndex() !== 0) return;
   setFlipSpeed(OPEN_MS);
   flipNextPage();
