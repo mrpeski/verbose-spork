@@ -20,9 +20,13 @@ function sizeBook() {
     area.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight),
     1100
   );
+  // Read the controls' margin rather than hardcoding it — it comes from
+  // the spacing scale now, and a stale copy here silently mis-sizes the
+  // book by the difference.
+  var controlsGap = parseFloat(getComputedStyle(controls).marginTop) || 0;
   var availH = area.clientHeight
     - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)
-    - controls.offsetHeight - 18; // 18 = .book-controls margin-top
+    - controls.offsetHeight - controlsGap;
   var pageW = Math.min(availW / 2, availH * 550 / 720);
   var w = pageW * 2;
   if (w < 630) w = Math.min(availW, availH * 550 / 720); // portrait: single page
