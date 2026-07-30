@@ -1,165 +1,100 @@
-# Agent Guidelines for jQuery-Gig Repository
+# AGENTS.md
 
-## Build/Lint/Test Commands
+## What this repo is
 
-### Development Setup
-```bash
-# Install dependencies
-npm install
+Two static, hand-written sites built by concatenating HTML fragments with
+bash. There is **no package.json, no npm, no bundler, no TypeScript, no
+linter and no test suite** — do not add or assume any of them.
 
-# Start development server
-npm start
+| Site | Build | Components | Output |
+|---|---|---|---|
+| **Portfolio** (the live one) | `bash portfolio.sh [theme]` | `portfolio/components/` | `portfolio/index.html` |
+| **jQuery showcase** (older demo) | `bash build.sh [theme]` | `components/` | `index.html` (gitignored) |
 
-# Run tests
-npm test
+`deploy.sh [theme]` rebuilds the portfolio, copies `portfolio/` into a temp
+dir, and **force-pushes it to the `gh-pages` branch**. Run it only when
+explicitly asked.
 
-# Run a single test (if using Jest)
-npm test -- -t "test name"
+## The one rule that matters
 
-# Run tests in watch mode
-npm test -- --watch
+**Never edit `portfolio/index.html` or the root `index.html`.** Both are
+generated — the next build silently discards your work. Edit the fragments
+in `portfolio/components/` (or `components/`) and rebuild.
 
-# Build for production
-npm run build
+`portfolio/index.html` is committed (GitHub Pages serves `portfolio/` as the
+site root), so rebuild and commit it alongside any component change. The
+root `index.html` is gitignored.
 
-# Lint code
-npm run lint
+## Layout
 
-# Fix lint issues
-npm run lint -- --fix
+```
+portfolio/
+  components/*.html   # page fragments, concatenated in portfolio.sh's loop
+  css/styles.css      # the entire stylesheet
+  js/components/*.js  # one file per widget, plain <script> tags
+  js/utils/toast.js
+  sounds/*.mp3
+  data/resume.md      # source of truth for career content
 ```
 
-### Common npm Scripts (adjust based on actual package.json)
-- `npm run dev` - Development mode with hot reload
-- `npm run test:unit` - Run unit tests only
-- `npm run test:integration` - Run integration tests only
-- `npm run test:e2e` - Run end-to-end tests
-- `npm run preview` - Preview production build locally
+Page order and the TOC `data-page` indices in `components/shell-open.html`
+must stay in sync with the component loop in `portfolio.sh`.
 
-## Code Style Guidelines
+## How the JavaScript works
 
-### JavaScript/ES6+ Standards
-- Use ES6+ features (arrow functions, destructuring, spread/rest operators)
-- Prefer `const` and `let` over `var`
-- Use template literals for string interpolation
-- Implement async/await for asynchronous operations instead of callbacks when possible
-- Use modules (ES6 imports/exports) for code organization
+Plain ES5-era browser scripts loaded with `<script src>` in dependency
+order. **No modules, no imports, no build step.** Top-level `var` and
+`function` declarations are globals, and files genuinely depend on that:
 
-### TypeScript Guidelines (if applicable)
-- Enable strict mode in tsconfig.json
-- Define explicit return types for functions
-- Use interfaces for object shapes
-- Avoid `any` type when possible
-- Use type aliases for complex types
-- Enforce null/checks with strict null checks
+- `book-ui.js` picks the reader mode and publishes `BookUI`, `makeSoundPool`,
+  `Sound` and `PREFERS_REDUCED_MOTION`. It must load before both drivers.
+- `book-flip.js` (StPageFlip magazine, ≥768px) and `book-snap.js`
+  (scroll-snap carousel, <768px) each activate for one mode and publish the
+  global `flipTo` plus a `Reader` object.
+- `deep-link.js` wraps the global `flipTo` and listens for `book:pagevisible`.
+- `counters.js` listens for `book:pagevisible`; `kanban.js` calls
+  `makeSoundPool`.
 
-### Import/Export Conventions
-- Group imports: built-in modules, third-party libraries, internal modules
-- Sort imports alphabetically within groups
-- Use named exports for utilities and constants
-- Use default export for primary component/function per file
-- Avoid wildcard imports (`import * as`) unless necessary
-- Use path aliases configured in jsconfig.ts/tsconfig.json for cleaner imports
+So: **script order in `portfolio.sh` is load-bearing.** Adding a file means
+adding a `<script>` tag to that heredoc.
 
-### Formatting (Prettier/ESLint)
-- Indentation: 2 spaces
-- Line length: 100 characters
-- Semicolons: Required
-- Quotes: Single quotes for strings
-- Trailing commas: ES5 style (only in multi-line contexts)
-- Bracket spacing: No extra spaces in brackets
-- Arrow function parentheses: Always include parentheses around parameters
+The breakpoint lives in two places that must agree — `READER_MOBILE_QUERY`
+in `book-ui.js` and the `@media (max-width: 767px)` block in `styles.css`.
 
-### Naming Conventions
-- Variables: camelCase
-- Functions: camelCase
-- Classes: PascalCase
-- Constants: UPPER_SNAKE_CASE
-- Files: kebab-case
-- Private methods/properties: _camelCase (prefix with underscore)
-- Boolean variables: starts with is/has/can/should (e.g., isVisible, hasError)
+## CSS conventions
 
-### Error Handling
-- Use try/catch for synchronous error handling
-- Handle promise rejections with .catch() or try/await
-- Create custom error classes for domain-specific errors
-- Log errors appropriately (don't use console.log in production)
-- Throw meaningful error messages
-- Validate inputs at function boundaries
-- Use optional chaining (?.) and nullish coalescing (??) for safe property access
+- One stylesheet, no nesting, no `@layer`.
+- **Values come from tokens, not from taste.** `:root` defines the palette,
+  a semantic colour layer, a 4px spacing scale (`--s1`…`--s9`), radii,
+  elevation, motion, and a fluid type scale (`--fs-*`, named for their
+  desktop pixel size).
+- Components reference the **semantic** names (`--bg`, `--text`, `--line`,
+  `--accent`, `--surface-inverse`…), never the raw palette (`--ink`,
+  `--cream`, `--acid`…). The semantic block is declared on every theme
+  selector so it re-resolves per theme — do not move it back to `:root`
+  alone or the themes stop working.
+- Hover states go inside `@media (hover: hover) and (pointer: fine)` so
+  they do not stick after a tap.
+- Interactive elements need a 44px minimum hit area, and form fields need
+  16px text on touch; see the `TOUCH TARGETS` block at the foot of the
+  stylesheet.
 
-### jQuery-Specific Guidelines
-- Document ready handler: Use `$(function() { ... })` or `$(document).on('ready', ...)`
-- Event delegation: Prefer `.on()` delegated events over direct bindings
-- Cache DOM selections: Store jQuery objects in variables when used multiple times
-- Chaining: Utilize jQuery chaining for readable code
-- Animations: Use CSS classes for animations when possible, fallback to jQuery animate
-- AJAX: Prefer `.ajax()` with proper error handling over shortcut methods
-- Plugins: Follow jQuery plugin authoring guidelines when creating plugins
-- Performance: Avoid expensive selectors, use ID selectors when possible
+## Style
 
-### Commenting Standards
-- Use JSDoc format for function/method documentation
-- Include @param, @returns, @throws annotations
-- Describe complex algorithms with inline comments
-- Keep comments up-to-date with code changes
-- Remove commented-out code; use version control instead
-- Explain why, not what (unless the what is non-obvious)
+Match the surrounding code: `var`, `function`, jQuery, two-space indents.
+Comments explain *why* — several document real browser bugs that were
+worked around, so read them before "simplifying" them away.
 
-### Testing Guidelines
-- Unit tests: Test individual functions in isolation
-- Integration tests: Test interaction between modules
-- Use descriptive test names that explain the behavior being tested
-- Follow Arrange-Act-Assert pattern
-- Mock external dependencies appropriately
-- Test edge cases and error conditions
-- Achieve meaningful coverage (focus on critical paths)
+## Verifying a change
 
-### Git Workflow
-- Commit messages: Conventional Commits format (feat:, fix:, docs:, etc.)
-- Branch naming: feature/, bugfix/, release/, hotfix/
-- Pull requests: Include description and link to relevant issues
-- Code review: Require approval before merging
-- Keep commits atomic and focused
+```bash
+bash portfolio.sh
+python3 -m http.server 8899        # http://localhost:8899/portfolio/index.html
+```
 
-## Additional Guidelines for jQuery Projects
+Check both readers — 390×844 (carousel) and 1440×900 (flipbook) — plus the
+768/767px boundary. Serve with caching disabled, or the browser will hand
+you a stale `index.html`/`styles.css` and you will verify the wrong build.
 
-### DOM Manipulation Best Practices
-- Minimize DOM reflows by batching changes
-- Use document fragments when creating multiple elements
-- Prefer textContent over innerHTML when inserting plain text
-- Event delegation for dynamically added elements
-- Remove event listeners when they're no longer needed to prevent memory leaks
-
-### Performance Optimization
-- Cache frequently accessed DOM elements
-- Use event delegation instead of attaching handlers to individual elements
-- Throttle/dedude resize and scroll event handlers
-- Consider using requestAnimationFrame for animations
-- Lazy load images and non-critical resources
-- Minimize global variables to reduce memory footprint
-
-### Security Considerations
-- Sanitize user input before inserting into DOM
-- Avoid using innerHTML with user-generated content
-- Implement proper CSRF protection for AJAX requests
-- Use HTTPS for all API calls
-- Validate and validate data on both client and server sides
-- Be cautious with eval() and similar functions
-
-### Accessibility (a11y)
-- Ensure all interactive elements are keyboard accessible
-- Use ARIA attributes when necessary
-- Provide meaningful alt text for images
-- Ensure sufficient color contrast
-- Test with screen readers regularly
-- Follow WCAG 2.1 guidelines
-
-### Plugin Development Guidelines
-- Follow jQuery plugin authoring best practices
-- Use the jQuery UI widget factory for complex plugins
-- Provide proper documentation and examples
-- Support method chaining where appropriate
-- Allow customization through options objects
-- Handle destruction and cleanup properly
-- Test with different versions of jQuery
+Themes: `bash portfolio.sh forest|ocean|sunset`, then rebuild the default
+with `bash portfolio.sh` before committing.

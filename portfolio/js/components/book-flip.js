@@ -79,8 +79,9 @@ var interactiveSelector = [
 // so mutating it retunes the very next flip.
 function setFlipSpeed(ms) { pageFlip.getSettings().flippingTime = ms; }
 
-// Both directions use the backward-flip sound for now (preferred by ear);
-// swap 'next' back to flip-forward.mp3 to restore direction-matched audio.
+// Both directions use the same sample. Direction-matched audio was tried
+// and dropped — the forward sample read as a different object turning,
+// not the same page going the other way — so its file is gone too.
 var flipSounds = {
   next: makeSoundPool('sounds/flip-backward.mp3'),
   prev: makeSoundPool('sounds/flip-backward.mp3')

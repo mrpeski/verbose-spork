@@ -1,5 +1,11 @@
-// Fill these in from your EmailJS account (emailjs.com → Email Services /
-// Email Templates / Account → API Keys) before deploying.
+// From the EmailJS account (emailjs.com → Email Services / Email Templates
+// / Account → API Keys). The public key is client-side by design, so these
+// three values are necessarily readable by anyone who views source.
+//
+// What stops that being an open send endpoint is the domain allowlist:
+// EmailJS dashboard → Account → Security → "Allowed origins". Confirm it
+// lists only mrpeski.github.io (plus localhost while developing). Without
+// it, anyone can post through this service and exhaust the quota.
 var EMAILJS_PUBLIC_KEY = 'Jq1Bou9RSDXSZzABH';
 var EMAILJS_SERVICE_ID = 'service_bbyqphe';
 var EMAILJS_TEMPLATE_ID = 'template_d2n3qg5';
