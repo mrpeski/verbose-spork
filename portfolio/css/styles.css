@@ -81,6 +81,10 @@
     color: var(--ink);
     font-family: 'DM Mono', monospace;
     overflow-x: hidden;
+    /* Stop iOS inflating text in landscape, which broke the fitted
+       page layouts the type scale assumes. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
     /* Kill double-tap-to-zoom (quick taps while swiping the book zoomed
        the page) but keep pinch-zoom for accessibility — a viewport meta
        lock would disable both, and iOS partially ignores it anyway. */
@@ -111,7 +115,9 @@
   }
 
   .btn-filled { background: var(--ink); color: var(--cream); }
-  .btn:hover { background: var(--rust); border-color: var(--rust); color: white; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { background: var(--rust); border-color: var(--rust); color: white; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
+  }
 
   /* ── SECTION HEADINGS ── */
   .section-num {
@@ -181,8 +187,13 @@
     transition: all 0.2s;
   }
 
-  .filter-btn.active, .filter-btn:hover {
-    background: var(--ink); color: var(--cream);
+  /* .active is the real selection; hover merely previews it. Sharing one
+     rule meant iOS kept the hover after a tap and two chips read as
+     selected at once — so hover is gated to real pointers throughout. */
+  .filter-btn.active { background: var(--ink); color: var(--cream); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .filter-btn:hover { background: var(--ink); color: var(--cream); }
   }
 
   .portfolio-grid {
@@ -201,6 +212,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     position: relative; overflow: hidden;
+    overflow-wrap: anywhere;
   }
 
   .portfolio-item .item-icon { font-size: var(--fs-28); }
@@ -276,7 +288,9 @@
     transition: background 0.2s;
   }
 
-  .accordion-header:hover { background: var(--acid); }
+  @media (hover: hover) and (pointer: fine) {
+    .accordion-header:hover { background: var(--acid); }
+  }
 
   .accordion-icon {
     font-family: 'Bebas Neue', sans-serif;
@@ -380,7 +394,11 @@
     padding: 12px 14px;
     margin-bottom: 8px;
     cursor: grab;
-    touch-action: none;
+    /* pan-y, not none: the page must still scroll under a finger that
+       starts on a card. kanban.js claims the gesture only after a
+       long-press, and preventDefault on the first move after that press
+       is what actually blocks the scroll. */
+    touch-action: pan-y;
     font-size: var(--fs-12);
     transition: box-shadow 0.2s, transform 0.2s;
     user-select: none;
@@ -388,6 +406,9 @@
 
   .kanban-card:active { cursor: grabbing; }
   .kanban-card.ui-draggable-dragging { box-shadow: 6px 6px 0 var(--ink); transform: rotate(1.5deg); }
+  /* Tells a thumb the long-press registered and the card is now held —
+     without it the 350ms delay just feels like the drag is broken. */
+  .kanban-card--held { border-color: var(--rust); transform: scale(1.03); }
   .kanban-list.ui-droppable-hover { background: rgba(200, 245, 62, 0.2); }
 
   .kanban-card-title { font-weight: 500; margin-bottom: 4px; }
@@ -421,7 +442,9 @@
   }
 
   .tab-btn:first-child, .proj-tab-btn:first-child { border-left: 2px solid var(--ink); }
-  .tab-btn:hover, .proj-tab-btn:hover { background: var(--acid); }
+  @media (hover: hover) and (pointer: fine) {
+    .tab-btn:hover, .proj-tab-btn:hover { background: var(--acid); }
+  }
   .tab-btn.active, .proj-tab-btn.active { background: var(--ink); color: var(--cream); border-bottom-color: var(--ink); }
 
   .tab-pane, .proj-tab-pane { display: none; animation: fadeSlide 0.3s ease; }
@@ -455,7 +478,9 @@
   .toast.show { transform: translateX(0); }
   .toast-icon { font-size: var(--fs-18); flex-shrink: 0; }
   .toast-close { margin-left: auto; cursor: pointer; opacity: 0.5; }
-  .toast-close:hover { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .toast-close:hover { opacity: 1; }
+  }
 
   /* skill tags on code snippets */
   .code-snippet {
@@ -495,6 +520,9 @@
     text-transform: uppercase;
     border: 1px solid var(--ink);
     padding: 3px 8px;
+    /* Unbroken strings like "Server-side Rendering (SSR)" are wider than
+       the ~138px grid cell they land in. */
+    overflow-wrap: anywhere;
   }
   .proj-link {
     display: inline-block;
@@ -508,7 +536,9 @@
     border-bottom: 2px solid var(--acid);
     transition: opacity 0.2s;
   }
-  .proj-link:hover { opacity: 0.6; }
+  @media (hover: hover) and (pointer: fine) {
+    .proj-link:hover { opacity: 0.6; }
+  }
 
   /* ═══ FLIPBOOK SHELL ═══ */
   body { overflow: hidden; }
@@ -593,7 +623,10 @@
   }
 
   .toc-links a:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
-  .toc-links a:hover, .toc-links a.active { color: var(--acid); }
+  .toc-links a.active { color: var(--acid); }
+  @media (hover: hover) and (pointer: fine) {
+    .toc-links a:hover { color: var(--acid); }
+  }
   .toc-links a.active::after { opacity: 1; transform: translateX(0); }
 
   .toc-foot {
@@ -691,7 +724,9 @@
     transition: all 0.2s;
   }
 
-  .flip-btn:hover { background: var(--acid); color: var(--ink); }
+  @media (hover: hover) and (pointer: fine) {
+    .flip-btn:hover { background: var(--acid); color: var(--ink); }
+  }
 
   #page-indicator {
     font-size: var(--fs-11);
@@ -916,22 +951,36 @@
   .book-dots {
     display: flex;
     align-items: center;
-    gap: 8px;
   }
 
+  /* Twelve 44×44 targets would need 528px of a 390px screen, so the dots
+     take the full 44px of height and share the width instead. Swipe is
+     the primary gesture; the dots are a position readout you can also
+     tap. The mark itself is drawn by ::before so the box can grow
+     without the dot growing with it. */
   .book-dot {
+    width: 24px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .book-dot::before {
+    content: '';
     width: 8px;
     height: 8px;
-    padding: 0;
     border: 1px solid var(--cream);
     border-radius: 999px;
-    background: transparent;
     opacity: 0.45;
-    cursor: pointer;
-    transition: opacity 0.2s, background-color 0.2s;
+    transition: opacity 0.2s, background-color 0.2s, border-color 0.2s;
   }
 
-  .book-dot.active {
+  .book-dot.active::before {
     background: var(--acid);
     border-color: var(--acid);
     opacity: 1;
@@ -943,7 +992,10 @@
     .app-shell:has(.book--snap) .book-area {
       padding: 52px 0 calc(8px + env(safe-area-inset-bottom));
     }
-    .book-controls--snap { margin-top: 8px; }
+    .book-controls--snap { margin-top: 0; }
+    /* The 96px reservation exists to stop the desktop arrows shifting on
+       every flip; with no arrows beside it, it just crowds the dots. */
+    .book-controls--snap #page-indicator { min-width: 0; }
     #menu-toggle { top: calc(8px + env(safe-area-inset-top)); }
   }
 
@@ -1074,9 +1126,85 @@
   .page .proj-card h4 { font-size: var(--fs-15); }
 
   /* ── MOBILE: component compaction inside portrait pages ── */
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     .page .kanban { grid-template-columns: 1fr; }
     .page .kanban-list { min-height: 0; }
-    .tab-nav { overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
     .page .tab-btn, .page .proj-tab-btn { flex: 1 0 auto; white-space: nowrap; }
+
+    /* The tab strip scrolls, but nothing said so — tabs 4 and 5 sat past
+       a hard edge that read as the end of the row. */
+    .tab-nav {
+      overflow-x: auto;
+      max-width: 100%;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
+      mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
+    }
+    .tab-nav::-webkit-scrollbar { display: none; }
+    .page .tab-btn, .page .proj-tab-btn { scroll-snap-align: start; }
+  }
+
+  /* ══ TOUCH TARGETS ══
+     Everything the compaction block above shrank is still tapped by a
+     thumb. Sizing is done with min-height rather than padding maths so
+     the compact type stays and only the hit area grows. Applies to
+     narrow viewports and to any coarse pointer (tablets, touch laptops)
+     — this block must stay last, since the compaction selectors it
+     corrects are equally specific. */
+  @media (max-width: 767px), (pointer: coarse) {
+    /* iOS Safari zooms into any field under 16px on focus, and with
+       body{overflow:hidden} the visitor cannot pan back out. */
+    .page .form-field input,
+    .page .form-field textarea,
+    .page .form-field select,
+    .page #search-input,
+    .form-field input,
+    .form-field textarea,
+    .form-field select,
+    #search-input {
+      font-size: 16px;
+      min-height: 44px;
+      padding: 10px 14px;
+    }
+    .page .form-field textarea, .form-field textarea { min-height: 88px; }
+
+    .page .filter-btn,
+    .page .tab-btn,
+    .page .proj-tab-btn,
+    .page .accordion-header,
+    .filter-btn, .tab-btn, .proj-tab-btn, .accordion-header {
+      min-height: 44px;
+    }
+
+    .toc-links a {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Was a bare inline link with no padding — a ~13px tall target. */
+    .proj-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 2px;
+    }
+
+    .toast-close {
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 280px + two 32px offsets left 8px of gutter at 320px wide. */
+    #toast-container {
+      left: 16px;
+      right: 16px;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    .toast { min-width: 0; width: 100%; }
   }

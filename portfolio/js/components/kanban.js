@@ -55,31 +55,74 @@ $('.kanban-list').droppable({
 
 // jQuery UI only listens for mouse events; translate touches so the board
 // is draggable on phones/tablets too.
+//
+// The drag must be *claimed*, not assumed. Grabbing every touchstart on a
+// card meant a swipe up to reach the Done column dragged the card
+// instead — and on a phone the board is a single tall column, so the
+// cards cover most of what the reader needs to scroll past. A card is
+// only picked up after the finger has held still for LONG_PRESS_MS;
+// move before that and the touch is released back to the scroller.
+//
+// Listeners are native with {passive: false} because Chrome makes
+// document-level touch listeners passive by default, which silently
+// drops the preventDefault the drag depends on.
 (function () {
   if (!('ontouchstart' in window)) return;
 
-  function simulate(e, type) {
-    var touch = e.originalEvent.changedTouches[0];
-    var ev = new MouseEvent(type, {
+  var LONG_PRESS_MS = 350;
+  var MOVE_TOLERANCE = 10; // px of drift still counted as "held still"
+
+  function dispatch(el, type, x, y) {
+    el.dispatchEvent(new MouseEvent(type, {
       bubbles: true, cancelable: true, view: window,
-      screenX: touch.screenX, screenY: touch.screenY,
-      clientX: touch.clientX, clientY: touch.clientY,
+      clientX: x, clientY: y, screenX: x, screenY: y,
       button: 0
-    });
-    e.target.dispatchEvent(ev);
+    }));
   }
 
-  $(document).on('touchstart', '.kanban-card', function (e) {
-    e.preventDefault();
-    simulate(e, 'mousedown');
-    $(document)
-      .on('touchmove.kanbanDrag', function (me) {
-        me.preventDefault();
-        simulate(me, 'mousemove');
-      })
-      .on('touchend.kanbanDrag touchcancel.kanbanDrag', function (ue) {
-        simulate(ue, 'mouseup');
-        $(document).off('.kanbanDrag');
-      });
-  });
+  document.addEventListener('touchstart', function (e) {
+    var card = e.target.closest && e.target.closest('.kanban-card');
+    if (!card) return;
+
+    var start = e.changedTouches[0];
+    var startX = start.clientX, startY = start.clientY;
+    var dragging = false;
+
+    var timer = setTimeout(function () {
+      dragging = true;
+      card.classList.add('kanban-card--held');
+      if (navigator.vibrate) navigator.vibrate(10);
+      dispatch(card, 'mousedown', startX, startY);
+    }, LONG_PRESS_MS);
+
+    function onMove(me) {
+      var t = me.changedTouches[0];
+      if (!dragging) {
+        // Moved before the press landed — this was a scroll, not a grab.
+        if (Math.abs(t.clientX - startX) > MOVE_TOLERANCE ||
+            Math.abs(t.clientY - startY) > MOVE_TOLERANCE) end();
+        return;
+      }
+      me.preventDefault();
+      dispatch(card, 'mousemove', t.clientX, t.clientY);
+    }
+
+    function onEnd(ue) {
+      var t = ue.changedTouches[0];
+      if (dragging) dispatch(card, 'mouseup', t.clientX, t.clientY);
+      end();
+    }
+
+    function end() {
+      clearTimeout(timer);
+      card.classList.remove('kanban-card--held');
+      document.removeEventListener('touchmove', onMove, { passive: false });
+      document.removeEventListener('touchend', onEnd);
+      document.removeEventListener('touchcancel', onEnd);
+    }
+
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd);
+    document.addEventListener('touchcancel', onEnd);
+  }, { passive: true });
 })();
