@@ -16,7 +16,7 @@ cat >"$OUT" <<HTML
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Olayinka – Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -39,11 +39,16 @@ done
 cat portfolio/components/shell-close.html >>"$OUT"
 cat portfolio/components/toast-container.html >>"$OUT"
 
-# External scripts – book.js first so flip events exist for the components
+# External scripts – the book comes first so its globals (makeSoundPool,
+# flipTo, the book:pagevisible event) exist for the components. book-ui.js
+# picks the reader mode and must precede both drivers; exactly one driver
+# activates, and deep-link.js wraps whichever flipTo it published.
 cat >>"$OUT" <<'JS'
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 <script src="js/utils/toast.js"></script>
-<script src="js/components/book.js"></script>
+<script src="js/components/book-ui.js"></script>
+<script src="js/components/book-flip.js"></script>
+<script src="js/components/book-snap.js"></script>
 <script src="js/components/counters.js"></script>
 <script src="js/components/filter.js"></script>
 <script src="js/components/form.js"></script>

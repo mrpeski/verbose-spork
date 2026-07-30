@@ -10,9 +10,13 @@
       <p class="page-desc">Every section of this portfolio is a live, interactive jQuery component running on the page you're reading. Drag the kanban cards, search the skills, submit the form — nothing here is a screenshot.</p>
       <div class="colophon">
         <h3 class="colophon-title">How to read</h3>
+        <!-- The two readers are navigated differently, so the instructions
+             differ too; book-ui.js sets .reader-flip / .reader-snap. -->
         <ul class="colophon-list">
-          <li><strong>Contents</strong> — pick any section in the left sidebar.</li>
-          <li><strong>Arrows</strong> — use the ← → buttons under the book, or your keyboard.</li>
+          <li class="only-flip"><strong>Contents</strong> — pick any section in the left sidebar.</li>
+          <li class="only-snap"><strong>Contents</strong> — tap ☰ for the list of sections.</li>
+          <li class="only-flip"><strong>Arrows</strong> — use the ← → buttons under the book, or your keyboard.</li>
+          <li class="only-snap"><strong>Swipe</strong> — swipe sideways, or tap a dot below.</li>
           <li><strong>Corners</strong> — page numbers sit at the bottom of each sheet.</li>
         </ul>
       </div>

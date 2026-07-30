@@ -852,11 +852,99 @@
   /* #menu-toggle { display: none; } */
   #sidebar-scrim { display: none; }
 
-  @media (max-width: 768px) {
+  /* 767, not 768, to match READER_MOBILE_QUERY in book-ui.js — at exactly
+     768px the two must agree on which reader is running. */
+  @media (max-width: 767px) {
     .sidebar { width: min(260px, 82vw); }
     .book-area { padding: 60px 10px 12px; }
     /* Portrait mode shows a single page — different pre-init ratio */
     #book:not(.stf__parent) { aspect-ratio: 550 / 720; }
+  }
+
+  /* Reader-specific copy. Hidden by default so neither variant flashes
+     before book-ui.js stamps the mode on <html>. */
+  .only-flip, .only-snap { display: none; }
+  .reader-flip .only-flip, .reader-snap .only-snap { display: revert; }
+
+  /* ── MOBILE READER: scroll-snap carousel ──
+     Driven by book-snap.js, which adds .book--snap. StPageFlip never
+     initialises in this mode, so .page keeps its authored position in
+     normal flow and #book is free to be the scroll container. Scoped on
+     the class rather than the media query alone so these rules can never
+     land on a book the flip driver owns. */
+  #book.book--snap {
+    /* Beat the pre-init reservation and the 1100px cap above */
+    aspect-ratio: auto;
+    max-width: none;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #book.book--snap::-webkit-scrollbar { display: none; }
+
+  #book.book--snap .page {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: center;
+    /* Never skip a page on a fast flick — this is a 12-page magazine,
+       not a feed, and the folio indicator would lie if pages were
+       scrolled past. */
+    scroll-snap-stop: always;
+    /* Full-bleed: the frame is the phone, so the leaf border reads as
+       wasted margin rather than paper. */
+    border: 0;
+  }
+
+  /* The nested scroller is the vertical axis only; without this a
+     flick that reaches the end of a long page hands the momentum to the
+     carousel and changes page mid-read. */
+  #book.book--snap .page-body { overscroll-behavior-y: contain; }
+
+  .book-controls--snap { gap: 12px; }
+  /* Swipe and the dot row replace the arrows on touch */
+  .book-controls--snap .flip-btn { display: none; }
+
+  .book-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .book-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 1px solid var(--cream);
+    border-radius: 999px;
+    background: transparent;
+    opacity: 0.45;
+    cursor: pointer;
+    transition: opacity 0.2s, background-color 0.2s;
+  }
+
+  .book-dot.active {
+    background: var(--acid);
+    border-color: var(--acid);
+    opacity: 1;
+  }
+
+  @media (max-width: 767px) {
+    /* Edge to edge — the page is the viewport now. The top pad clears
+       the fixed hamburger, the bottom the dot row and the home bar. */
+    .app-shell:has(.book--snap) .book-area {
+      padding: 52px 0 calc(8px + env(safe-area-inset-bottom));
+    }
+    .book-controls--snap { margin-top: 8px; }
+    #menu-toggle { top: calc(8px + env(safe-area-inset-top)); }
   }
 
   /* ── PAGE-SCOPED COMPACTION ── */
