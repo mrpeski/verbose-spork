@@ -1,0 +1,1394 @@
+/* ── PALETTE ──
+   Raw brand colours. Components must never reference these directly —
+   they name the semantic layer instead, which is what the themes swap.
+   :root and .theme-light are the same set; portfolio.sh emits
+   <body class="theme-light"> by default, and before this the class
+   matched no rule at all — the page rendered from :root by luck. */
+:root, .theme-light {
+  --ink: #0d0d0d;
+  --cream: #f5f0e8;
+  --acid: #c8f53e;
+  --rust: #e8461e;
+  --steel: #2a2a35;
+  --muted: #7a7a7a;
+  --card-bg: #ffffff;
+  --border: #e0ddd6;
+  /* ── SPACING — 4px base ──
+     Replaces ~57 off-grid values that had settled into a de-facto 2px
+     grid (10/14/18/26px). A value should only ever come from here. */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 20px; --s6: 24px; --s7: 32px; --s8: 44px; --s9: 64px;
+
+  /* ── RADII ── */
+  --r-sm: 4px; --r-md: 8px; --r-pill: 999px;
+
+  /* ── ELEVATION ──
+     Layered pairs tinted toward --ink rather than pure black. */
+  --e1: 0 1px 2px rgba(13, 13, 13, 0.05), 0 1px 1px rgba(13, 13, 13, 0.03);
+  --e2: 0 1px 2px rgba(13, 13, 13, 0.06), 0 4px 12px rgba(13, 13, 13, 0.06);
+  --e3: 0 1px 2px rgba(13, 13, 13, 0.07), 0 8px 28px rgba(13, 13, 13, 0.09);
+
+  /* ── MOTION ── */
+  --t-fast: 130ms; --t-base: 180ms; --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── FLUID TYPE SCALE ──
+     Each step interpolates between a 375px and a 1280px viewport and
+     keeps its rank in the hierarchy. Var names carry the desktop (max)
+     pixel size.
+
+     Floors, not just ceilings, are part of the scale: nothing carrying
+     running text may resolve below 15px, and no label below 12px. The
+     old scale shrank instead — nine of twenty steps pinned under 14px at
+     375px, which put 11.5px body copy on Experience and 8px skill tags
+     on Projects. The four smallest steps now floor at their own ceiling,
+     so they are flat 12px; they stay as separate names because the
+     hierarchy still reads on desktop through weight and tracking. */
+  --fs-9:   12px;
+  --fs-10:  12px;
+  --fs-11:  12px;
+  --fs-12:  12px;
+  --fs-13:  clamp(12px, 11.59px + 0.11vw, 13px);
+  --fs-14:  clamp(13px, 12.59px + 0.11vw, 14px);
+  --fs-15:  15px;
+  --fs-16:  clamp(15px, 14.59px + 0.11vw, 16px);
+  --fs-17:  clamp(15.5px, 14.86px + 0.17vw, 17px);
+  --fs-18:  clamp(16px, 15.18px + 0.22vw, 18px);
+  --fs-19:  clamp(16.5px, 15.45px + 0.28vw, 19px);
+  --fs-20:  clamp(17px, 15.76px + 0.33vw, 20px);
+  --fs-22:  clamp(18px, 16.4px + 0.43vw, 22px);
+  --fs-28:  clamp(22px, 19.7px + 0.65vw, 28px);
+  --fs-32:  clamp(25px, 22.3px + 0.76vw, 32px);
+  --fs-34:  clamp(26px, 22.9px + 0.87vw, 34px);
+  --fs-40:  clamp(30px, 26.1px + 1.09vw, 40px);
+  --fs-44:  clamp(33px, 28.7px + 1.2vw, 44px);
+  /* Display ranks. --fs-60 and --fs-120 replace the two raw-vw clamps
+     that used to sit inline on .section-title and .cover-title; both
+     pinned to their hardcoded floor below 400px, so the fluidity was
+     fictional and the values escaped the scale entirely. */
+  --fs-60:  clamp(32px, 20.4px + 3.09vw, 60px);
+  --fs-64:  clamp(46px, 39px + 1.96vw, 64px);
+  --fs-120: clamp(64px, 40.8px + 6.19vw, 120px);
+  --fs-240: clamp(150px, 18.75vw, 240px);
+}
+
+/* Themes override the palette only; the semantic layer below is
+   declared on these same selectors, so it re-derives per theme. */
+
+/* ── THEME: FOREST ── */
+.theme-forest {
+  --ink: #0a2e0a;
+  --cream: #e8f5e9;
+  --acid: #a4c639;
+  --rust: #8c3e2f;
+  --steel: #3b4d3b;
+  --muted: #6b8f6b;
+  --card-bg: #f0fff0;
+  --border: #c0d0c0;
+}
+
+/* ── THEME: OCEAN ── */
+.theme-ocean {
+  --ink: #102a4c;
+  --cream: #e0f2f7;
+  --acid: #2b8ead;
+  --rust: #d94e45;
+  --steel: #3a5f7d;
+  --muted: #7a9aa1;
+  --card-bg: #e0f7ff;
+  --border: #a0c4d8;
+}
+
+/* ── THEME: SUNSET ── */
+.theme-sunset {
+  --ink: #3b1c1c;
+  --cream: #fff2e0;
+  --acid: #ffb347;
+  --rust: #e84545;
+  --steel: #684b3e;
+  --muted: #a37c6d;
+  --card-bg: #fff5e0;
+  --border: #ffdbb5;
+}
+
+/* ── SEMANTIC COLOUR ──
+   What components actually name. Declared on every theme selector, not
+   just :root — a custom property is resolved on the element that
+   declares it, so `--bg: var(--cream)` sitting only on :root would keep
+   resolving to the *light* cream even when a theme class on <body>
+   overrode --cream. That is exactly why the three themes did nothing
+   before. Listing the selectors here keeps one copy of the mapping
+   while still resolving per theme. */
+:root,
+.theme-light,
+.theme-forest,
+.theme-ocean,
+.theme-sunset {
+  --bg: var(--cream);
+  --surface: var(--card-bg);
+  --text: var(--ink);
+  --text-2: var(--muted);
+  --line: var(--border);
+  /* The heavy 2px rules that give the magazine its blocky frame. Tracks
+     the text colour deliberately, not the hairline colour. */
+  --line-strong: var(--ink);
+  --accent: var(--acid);
+  --danger: var(--rust);
+  /* Inverted pairs — the black-on-cream reversals the magazine leans on
+     (filled buttons, open accordion headers, covers, the sidebar). */
+  --surface-inverse: var(--ink);
+  --text-inverse: var(--cream);
+  /* The dark shell the book sits on, and the softer body colour used for
+     long-form answer text. */
+  --backdrop: var(--steel);
+  --text-soft: var(--steel);
+  /* Derived rather than hand-picked per theme, so a new theme needs to
+     supply nothing but the eight palette entries. */
+  --surface-2: color-mix(in srgb, var(--card-bg) 55%, var(--cream));
+  --danger-soft: color-mix(in srgb, var(--rust) 12%, var(--cream));
+  --danger-line: color-mix(in srgb, var(--rust) 35%, var(--cream));
+  /* Syntax colours for the dark .code-snippet block — fixed, because
+     they sit on their own dark surface rather than on --bg. */
+  --code-kw: #ff9a6b;
+  --code-str: #b8e0ff;
+}
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* mobile browsers (iOS Safari) default button text to blue */
+  button { color: inherit; font-family: inherit; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+    /* Stop iOS inflating text in landscape, which broke the fitted
+       page layouts the type scale assumes. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Kill double-tap-to-zoom (quick taps while swiping the book zoomed
+       the page) but keep pinch-zoom for accessibility — a viewport meta
+       lock would disable both, and iOS partially ignores it anyway. */
+    touch-action: manipulation;
+  }
+
+  /* ── NOISE OVERLAY ──
+     A fixed full-viewport feTurbulence layer above everything. Suspected
+     of causing scroll/flip jank, so it was measured rather than guessed
+     at: sweeping the mobile carousel across six pages gave a median
+     frame of 16.7ms with it and 16.7ms without, and no frame over 20ms
+     either way. The browser rasterises the SVG once and composites it —
+     the filter does not re-run per frame. Kept. */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.5;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: var(--s3) var(--s7);
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-13);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 2px solid var(--line-strong);
+    text-decoration: none;
+    transition: background-color var(--t-fast), border-color var(--t-fast),
+                color var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
+    background: transparent;
+    color: var(--text);
+  }
+
+  .btn-filled { background: var(--surface-inverse); color: var(--text-inverse); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { background: var(--danger); border-color: var(--danger); color: var(--text-inverse); transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--line-strong); }
+  }
+
+  /* ── SECTION HEADINGS ── */
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-13);
+    background: var(--accent);
+    color: var(--text);
+    padding: var(--s1) var(--s2);
+    border: 2px solid var(--line-strong);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-60);
+    line-height: 1;
+  }
+
+  /* ── 1. ANIMATED COUNTER ── */
+  .counters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2px;
+    background: var(--surface-inverse);
+    border: 2px solid var(--line-strong);
+  }
+
+  .counter-box {
+    background: var(--bg);
+    padding: 36px 24px;
+    text-align: center;
+  }
+
+  .counter-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-64);
+    color: var(--danger);
+    display: block;
+    line-height: 1;
+  }
+
+  .counter-label {
+    font-size: var(--fs-11);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin-top: 8px;
+  }
+
+  #trigger-counter {
+    margin-top: 24px;
+  }
+
+  /* ── 2. DYNAMIC FILTER ── */
+  .filter-btns {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+
+  .filter-btn {
+    padding: 8px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-12);
+    letter-spacing: 0.08em;
+    border: 2px solid var(--line-strong);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color var(--t-fast), color var(--t-fast), transform var(--t-fast);
+  }
+
+  /* .active is the real selection; hover merely previews it. Sharing one
+     rule meant iOS kept the hover after a tap and two chips read as
+     selected at once — so hover is gated to real pointers throughout. */
+  .filter-btn.active { background: var(--surface-inverse); color: var(--text-inverse); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .filter-btn:hover { background: var(--surface-inverse); color: var(--text-inverse); }
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .portfolio-item {
+    border: 2px solid var(--line-strong);
+    aspect-ratio: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 8px;
+    font-size: var(--fs-11);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    position: relative; overflow: hidden;
+    overflow-wrap: anywhere;
+  }
+
+  .portfolio-item .item-icon { font-size: var(--fs-28); }
+
+  /* These four used to name web/mobile/design/data — categories the
+     markup has never used. They matched nothing, so every tile rendered
+     as an identical bordered box. Wired to the real categories and
+     mixed from the palette so the tints follow the active theme. */
+  .portfolio-item[data-cat="frontend"] { background: color-mix(in srgb, var(--accent) 18%, var(--bg)); }
+  .portfolio-item[data-cat="backend"]  { background: color-mix(in srgb, var(--line-strong) 8%, var(--bg)); }
+  .portfolio-item[data-cat="devops"]   { background: color-mix(in srgb, var(--danger) 12%, var(--bg)); }
+  .portfolio-item[data-cat="database"] { background: color-mix(in srgb, var(--text-2) 16%, var(--bg)); }
+
+  /* ── 3. AJAX FORM ── */
+  .ajax-form { display: grid; gap: 16px; max-width: 480px; }
+
+  .form-field { display: grid; gap: var(--s1); }
+  .form-field label { font-size: var(--fs-11); letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-2); }
+
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-13);
+    border: 2px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+
+  .form-field input:focus,
+  .form-field textarea:focus,
+  .form-field select:focus { border-color: var(--line-strong); }
+
+  .form-field .error-msg {
+    font-size: var(--fs-11); color: var(--danger);
+    display: none;
+  }
+
+  .form-field.has-error input,
+  .form-field.has-error textarea { border-color: var(--danger); }
+  .form-field.has-error .error-msg { display: block; }
+
+  .form-feedback {
+    padding: var(--s3) var(--s5);
+    font-size: var(--fs-13);
+    display: none;
+    border: 2px solid var(--line-strong);
+  }
+
+  .form-feedback.success { background: var(--accent); }
+  .form-feedback.error { background: var(--danger-soft); }
+
+  .progress-bar {
+    height: 3px; background: var(--line); margin-top: 12px;
+    overflow: hidden; display: none;
+  }
+
+  .progress-fill { height: 100%; background: var(--danger); width: 0%; transition: width 0.05s linear; }
+
+  /* ── 4. ACCORDION ── */
+  .accordion-item {
+    border: 2px solid var(--line-strong);
+    margin-bottom: -2px;
+  }
+
+  .accordion-header {
+    padding: 20px 24px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: var(--fs-14); letter-spacing: 0.05em;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .accordion-header:hover { background: var(--accent); }
+  }
+
+  .accordion-icon {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-22);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .accordion-body {
+    display: none;
+    padding: 24px;
+    background: var(--surface-2);
+    border-top: 2px solid var(--line-strong);
+    font-family: 'Fraunces', serif;
+    /* FAQ answers are running text — a reading-grade rank, not a label. */
+    font-size: var(--fs-15);
+    line-height: 1.7;
+    color: var(--text-soft);
+  }
+
+  .accordion-item.open .accordion-header { background: var(--surface-inverse); color: var(--text-inverse); }
+  .accordion-item.open .accordion-icon { transform: rotate(45deg); }
+
+  /* ── 5. LIVE SEARCH ── */
+  #search-input {
+    width: 100%;
+    padding: 16px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-14);
+    border: 2px solid var(--line-strong);
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    margin-bottom: 20px;
+  }
+
+  .search-results { display: grid; gap: 8px; }
+
+  .search-result-item {
+    padding: 16px 20px;
+    border: 2px solid var(--line);
+    display: flex; align-items: center; gap: 16px;
+  }
+
+  .result-icon {
+    width: 36px; height: 36px;
+    background: var(--surface-inverse);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--fs-16); flex-shrink: 0;
+  }
+
+  .result-name { font-size: var(--fs-13); font-weight: 500; }
+  .result-meta { font-size: var(--fs-11); color: var(--text-2); margin-top: 2px; }
+  .highlight { background: var(--accent); padding: 0 2px; }
+
+  #search-count {
+    font-size: var(--fs-11); color: var(--text-2);
+    letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+
+  /* Was an inline font-size:13px injected by search.js */
+  .search-empty {
+    color: var(--text-2);
+    font-size: var(--fs-14);
+    padding: 16px 0;
+  }
+
+  /* ── 6. DRAG & DROP ── */
+  .kanban {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .kanban-col {
+    border: 2px solid var(--line-strong);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kanban-col-header {
+    padding: var(--s3) var(--s5);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-16); letter-spacing: 0.1em;
+    border-bottom: 2px solid var(--line-strong);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .kanban-col-header .col-count {
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-11);
+    background: var(--accent);
+    color: var(--text);
+    padding: var(--s1) var(--s2);
+    border: 1px solid var(--line-strong);
+  }
+
+  .kanban-list {
+    padding: 12px;
+    min-height: 200px;
+    flex: 1;
+  }
+
+  .kanban-card {
+    background: var(--bg);
+    border: 2px solid var(--line-strong);
+    padding: var(--s3) var(--s3);
+    margin-bottom: 8px;
+    cursor: grab;
+    /* pan-y, not none: the page must still scroll under a finger that
+       starts on a card. kanban.js claims the gesture only after a
+       long-press, and preventDefault on the first move after that press
+       is what actually blocks the scroll. */
+    touch-action: pan-y;
+    font-size: var(--fs-12);
+    transition: box-shadow 0.2s, transform 0.2s;
+    user-select: none;
+  }
+
+  .kanban-card:active { cursor: grabbing; }
+  .kanban-card.ui-draggable-dragging { box-shadow: 6px 6px 0 var(--line-strong); transform: rotate(1.5deg); }
+  /* Tells a thumb the long-press registered and the card is now held —
+     without it the 350ms delay just feels like the drag is broken. */
+  .kanban-card--held { border-color: var(--danger); transform: scale(1.03); }
+  .kanban-list.ui-droppable-hover { background: rgba(200, 245, 62, 0.2); }
+
+  .kanban-card-title { font-weight: 500; margin-bottom: 4px; }
+  .kanban-card-tag {
+    display: inline-block;
+    font-size: var(--fs-9); letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: var(--s1) var(--s1); margin-top: var(--s1);
+    border: 1px solid var(--line-strong);
+  }
+
+  /* ── 7. TABS ── */
+  .tab-nav {
+    display: flex; gap: 0;
+    border-bottom: 2px solid var(--line-strong);
+    margin-bottom: 32px;
+    /* Five tabs do not fit the width of a magazine page at any viewport —
+       the last one used to wrap and clip against the page edge. Scroll
+       the row instead, and fade its trailing edge so it reads as
+       continuing rather than ending. */
+    overflow-x: auto;
+    max-width: 100%;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 24px), transparent 100%);
+  }
+
+  .tab-nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn, .proj-tab-btn {
+    padding: var(--s3) var(--s6);
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-12); letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-right: 2px solid var(--line-strong);
+    border-bottom: 2px solid var(--line-strong);
+    margin-bottom: -2px;
+    transition: background 0.2s;
+    /* Keep every label on one line and let the row scroll instead */
+    flex: 0 0 auto;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+
+  .tab-btn:first-child, .proj-tab-btn:first-child { border-left: 2px solid var(--line-strong); }
+  @media (hover: hover) and (pointer: fine) {
+    .tab-btn:hover, .proj-tab-btn:hover { background: var(--accent); }
+  }
+  .tab-btn.active, .proj-tab-btn.active { background: var(--surface-inverse); color: var(--text-inverse); border-bottom-color: var(--line-strong); }
+
+  .tab-pane, .proj-tab-pane { display: none; animation: fadeSlide 0.3s ease; }
+  .tab-pane.active, .proj-tab-pane.active { display: block; }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── 8. TOAST ── */
+  #toast-container {
+    position: fixed; bottom: 32px; right: 32px;
+    z-index: 9998; display: flex; flex-direction: column; gap: var(--s2);
+  }
+
+  .toast {
+    padding: var(--s3) var(--s5);
+    background: var(--surface-inverse);
+    color: var(--text-inverse);
+    border: 2px solid var(--accent);
+    font-size: var(--fs-12);
+    letter-spacing: 0.05em;
+    min-width: 280px;
+    display: flex; align-items: center; gap: 12px;
+    transform: translateX(110%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 4px 4px 0 var(--accent);
+  }
+
+  .toast.show { transform: translateX(0); }
+  .toast-icon { font-size: var(--fs-18); flex-shrink: 0; }
+  .toast-close { margin-left: auto; cursor: pointer; opacity: 0.5; }
+  @media (hover: hover) and (pointer: fine) {
+    .toast-close:hover { opacity: 1; }
+  }
+
+  /* skill tags on code snippets */
+  .code-snippet {
+    background: var(--backdrop);
+    color: var(--accent);
+    padding: 20px 24px;
+    font-size: var(--fs-12);
+    line-height: 1.7;
+    border: 2px solid var(--line-strong);
+    margin-top: 20px;
+    overflow-x: auto;
+  }
+
+  .code-snippet .cm { color: var(--text-2); }
+  .code-snippet .kw { color: var(--code-kw); }
+  .code-snippet .fn { color: var(--accent); }
+  .code-snippet .st { color: var(--code-str); }
+
+  /* project tabs */
+  .proj-card { padding: 20px 0; border-bottom: 1px solid var(--line-strong); }
+  .proj-card:last-child { border-bottom: none; }
+  .proj-card h4 {
+    font-family: 'Fraunces', serif;
+    font-size: var(--fs-17);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .proj-card p { font-family: 'Fraunces', serif; line-height: 1.5; max-width: 640px; }
+  .proj-skills {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 12px;
+  }
+  .skill-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-9);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--line-strong);
+    padding: var(--s1) var(--s2);
+    /* Unbroken strings like "Server-side Rendering (SSR)" are wider than
+       the ~138px grid cell they land in. */
+    overflow-wrap: anywhere;
+  }
+  .proj-link {
+    display: inline-block;
+    margin-top: var(--s3);
+    font-family: 'DM Mono', monospace;
+    font-size: var(--fs-11);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    transition: opacity 0.2s;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .proj-link:hover { opacity: 0.6; }
+  }
+
+  /* ═══ FLIPBOOK SHELL ═══ */
+  body { overflow: hidden; }
+
+  .app-shell {
+    display: flex;
+    height: 100vh;
+    height: 100dvh;
+    background: var(--backdrop);
+  }
+
+  /* ── SIDEBAR TOC ── */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 320;
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--surface-inverse);
+    color: var(--text-inverse);
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0;
+    border-right: 2px solid var(--accent);
+    transform: translateX(0);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .app-shell:not(:has(.sidebar.open)) .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .toc-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-32);
+    color: var(--accent);
+    padding: 0 28px;
+  }
+
+  .toc-issue {
+    font-size: var(--fs-10);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    padding: 4px 28px 24px;
+  }
+
+  .toc-links {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .toc-links a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: var(--s3) var(--s6);
+    color: var(--text-inverse);
+    text-decoration: none;
+    font-size: var(--fs-11);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .toc-links a::after {
+    content: '\2190';
+    color: var(--accent);
+    font-size: var(--fs-13);
+    letter-spacing: 0;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .toc-links a:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
+  .toc-links a.active { color: var(--accent); }
+  @media (hover: hover) and (pointer: fine) {
+    .toc-links a:hover { color: var(--accent); }
+  }
+  .toc-links a.active::after { opacity: 1; transform: translateX(0); }
+
+  .toc-foot {
+    font-size: var(--fs-10);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    padding: 24px 28px 0;
+    line-height: 1.8;
+  }
+
+  #menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 300;
+    width: 44px;
+    height: 44px;
+    background: var(--surface-inverse);
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    font-size: var(--fs-18);
+    cursor: pointer;
+  }
+
+  #sidebar-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 310;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .app-shell:has(.sidebar.open) #sidebar-scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .book-area {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 40px 20px;
+    margin-left: 260px;
+    transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Contain the turning leaf: mid-flip StPageFlip's .stf__item swings
+       hundreds of px past the viewport, widening the document each frame.
+       iOS Safari responds by dropping the page's minimum zoom scale —
+       the page zooms out and flickers on every swipe. Everything past
+       .book-area is off-screen, so clipping here changes nothing visually.
+       (overflow: hidden alone doesn't stop Safari's zoom recalculation —
+       clip removes the scrollable overflow entirely.) */
+    overflow: hidden;
+    overflow: clip;
+  }
+
+  .app-shell:not(:has(.sidebar.open)) .book-area {
+    margin-left: 0;
+  }
+
+  #book { width: 100%; max-width: 1100px; }
+
+  /* Reserve the book's final height before StPageFlip initialises
+     (it adds .stf__parent on init) so the page doesn't jump on load. */
+  #book:not(.stf__parent) { aspect-ratio: 1100 / 720; }
+
+  .book-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: var(--s4);
+    /* The stf__wrapper's aspect-ratio padding can extend over this row;
+       lift the controls so the arrows stay clickable. */
+    position: relative;
+    z-index: 10;
+  }
+
+  .flip-btn {
+    width: 44px; height: 44px;
+    border: 2px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-size: var(--fs-18);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background-color var(--t-fast), color var(--t-fast), transform var(--t-fast);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .flip-btn:hover { background: var(--accent); color: var(--text); }
+  }
+
+  #page-indicator {
+    font-size: var(--fs-11);
+    letter-spacing: 0.2em;
+    color: var(--text-inverse);
+    /* Fixed footprint: "Cover" vs "9–10 / 10" vs "Back cover" must not
+       resize the row, or the centered arrows shift on every flip. */
+    min-width: 96px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── PAGES ── */
+  /* StPageFlip wraps each .page in its own .stf__item and owns all
+     positioning/transforms — never add margins or position here. */
+  .page {
+    background: var(--bg);
+    border: 2px solid var(--line-strong);
+    overflow: hidden;
+    /* Isolate each page's internal layout (accordion slides, counter
+       animations) so it can't reflow the book. StPageFlip already hides
+       off-screen pages with display:none, so content-visibility added
+       nothing here — and its intrinsic-size guess never matched the real
+       page height, which showed up as a resize when pages flipped in. */
+    contain: layout style paint;
+  }
+
+  .page-inner {
+    height: 100%;
+    padding: 28px 32px 48px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .page-num {
+    position: absolute;
+    bottom: var(--s4);
+    right: 32px;
+    font-size: var(--fs-10);
+    letter-spacing: 0.2em;
+    color: var(--text-2);
+  }
+
+  /* Magazine folios sit at the outer edge of each leaf */
+  .page--left .page-num {
+    right: auto;
+    left: 32px;
+  }
+
+  /* Center spread: drop the doubled border at the spine so the two
+     leaves read as one surface, and add a subtle gutter shadow.
+     Classes are assigned by book.js only when two pages are visible. */
+  /* Transparent (not none): dropping the border entirely changes the
+     content box by 2px, so page text jiggled every time these classes
+     were swapped. Transparent keeps geometry identical — the cream
+     background shows through, which reads the same as no border. */
+  .page--left { border-right-color: transparent; }
+  .page--right { border-left-color: transparent; }
+
+  /* Gutter shadow, drawn once on the book block rather than per page:
+     page-level overlays are clipped by .page's overflow:hidden, so they
+     could never cover the transparent border strip or the mitred border
+     corners — which left a light spine line poking past the book
+     outline. The first two gradients re-stitch the ink outline across
+     the spine at top and bottom; the third is the gutter shade. */
+  .stf__block::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 72px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.2s;
+    background:
+      linear-gradient(to bottom, var(--line-strong) 2px, transparent 2px),
+      linear-gradient(to top, var(--line-strong) 2px, transparent 2px),
+      linear-gradient(to right, transparent, rgba(28, 26, 23, 0.09) 46%, rgba(28, 26, 23, 0.09) 54%, transparent);
+  }
+
+  #book.book--spread .stf__block::after { opacity: 1; }
+
+  /* StPageFlip draws opaque shadow bands (.stf__hardShadow/.stf__hardInnerShadow)
+     along the spine during hard-page (cover) flips. Against the dark backdrop they
+     read as a gap between the turning leaf and the spine. Soft pages shade
+     themselves differently and are unaffected. */
+  .stf__hardShadow,
+  .stf__hardInnerShadow { opacity: 0 !important; }
+
+  /* hard covers */
+  .page[data-density="hard"] {
+    background:
+      linear-gradient(to right, rgba(240,235,226,0.28), rgba(240,235,226,0.08) 30px, transparent 70px),
+      var(--surface-inverse);
+    color: var(--text-inverse);
+    border-color: var(--line-strong);
+  }
+
+  .cover-inner { justify-content: center; }
+
+  .cover-tag {
+    font-size: var(--fs-10);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .cover-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-120);
+    line-height: 0.9;
+    color: var(--text-inverse);
+  }
+
+  .cover-sub {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: var(--fs-18);
+    color: rgba(255,255,255,0.6);
+    margin-top: 20px;
+  }
+
+  .cover-num {
+    position: absolute;
+    right: -10px;
+    bottom: -40px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-240);
+    line-height: 1;
+    color: rgba(255,255,255,0.06);
+    pointer-events: none;
+  }
+
+  .cover-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-40);
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .back-inner { align-items: flex-start; }
+
+
+  /* Reader-specific copy. Hidden by default so neither variant flashes
+     before book-ui.js stamps the mode on <html>. */
+  .only-flip, .only-snap { display: none; }
+  .reader-flip .only-flip, .reader-snap .only-snap { display: revert; }
+
+  /* ── MOBILE READER: scroll-snap carousel ──
+     Driven by book-snap.js, which adds .book--snap. StPageFlip never
+     initialises in this mode, so .page keeps its authored position in
+     normal flow and #book is free to be the scroll container. Scoped on
+     the class rather than the media query alone so these rules can never
+     land on a book the flip driver owns. */
+  #book.book--snap {
+    /* Beat the pre-init reservation and the 1100px cap above */
+    aspect-ratio: auto;
+    max-width: none;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #book.book--snap::-webkit-scrollbar { display: none; }
+
+  #book.book--snap .page {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: center;
+    /* Never skip a page on a fast flick — this is a 12-page magazine,
+       not a feed, and the folio indicator would lie if pages were
+       scrolled past. */
+    scroll-snap-stop: always;
+    /* Full-bleed: the frame is the phone, so the leaf border reads as
+       wasted margin rather than paper. */
+    border: 0;
+  }
+
+  /* The nested scroller is the vertical axis only; without this a
+     flick that reaches the end of a long page hands the momentum to the
+     carousel and changes page mid-read. */
+  #book.book--snap .page-body { overscroll-behavior-y: contain; }
+
+  .book-controls--snap { gap: 12px; }
+  /* Swipe and the dot row replace the arrows on touch */
+  .book-controls--snap .flip-btn { display: none; }
+
+  .book-dots {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Twelve 44×44 targets would need 528px of a 390px screen, so the dots
+     take the full 44px of height and share the width instead. Swipe is
+     the primary gesture; the dots are a position readout you can also
+     tap. The mark itself is drawn by::before so the box can grow
+     without the dot growing with it. */
+  .book-dot {
+    width: 24px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .book-dot::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--bg);
+    border-radius: 999px;
+    opacity: 0.45;
+    transition: opacity 0.2s, background-color 0.2s, border-color 0.2s;
+  }
+
+  .book-dot.active::before {
+    background: var(--accent);
+    border-color: var(--accent);
+    opacity: 1;
+  }
+
+
+  /* ── PAGE-SCOPED COMPACTION ── */
+  .page .section-title { font-size: var(--fs-34); }
+
+  .page-desc {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: var(--fs-15);
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: var(--s6);
+  }
+
+  .page .tab-pane h4 { margin-bottom: 12px; }
+  .page .tab-pane p { margin-bottom: var(--s3); }
+  .colophon-title { margin-bottom: var(--s3); }
+
+  .page-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 8px;
+  }
+
+  .page .counters-grid { grid-template-columns: 1fr 1fr; }
+  .page .counter-box { padding: 24px 16px; }
+  .page .counter-num { font-size: var(--fs-44); }
+  .page #trigger-counter { margin-top: 20px; }
+
+  .page .ajax-form { gap: var(--s2); max-width: none; }
+  .page .form-field input,
+  .page .form-field textarea,
+  .page .form-field select { padding: 8px 12px; }
+
+  .page .kanban { gap: var(--s2); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .page .kanban-card { padding: var(--s2) var(--s3); }
+  .page .kanban-card-title { font-size: var(--fs-12); }
+
+  /* intro / colophon */
+  .intro-lede {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: var(--fs-19);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .colophon {
+    border: 2px solid var(--line-strong);
+    padding: var(--s4) var(--s5);
+    margin-top: auto;
+  }
+
+  .colophon-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: var(--fs-20);
+    letter-spacing: 0.05em;
+    margin-bottom: var(--s2);
+  }
+
+  .colophon-list {
+    list-style: none;
+    /* Reading text — the credentials page renders its whole degree and
+       certification list through this class. */
+    font-size: var(--fs-15);
+    line-height: 1.7;
+    color: var(--text-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+  }
+
+  .colophon-list strong { color: var(--text); }
+
+  /* accordion */
+  .page .accordion-header { padding: 12px 16px; font-size: var(--fs-13); }
+  .page .accordion-icon { font-size: var(--fs-18); }
+  .page .accordion-body { padding: var(--s3) var(--s4); }
+
+  /* filter */
+  .page .filter-btn { padding: var(--s2) var(--s3); font-size: var(--fs-10); }
+  .page .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s2);
+  }
+  .page .portfolio-item {
+    aspect-ratio: auto;
+    flex-direction: row;
+    padding: 16px;
+    justify-content: flex-start;
+  }
+  .page .portfolio-item .item-icon {
+    font-size: var(--fs-18);
+  }
+
+  /* search */
+  .page #search-input { padding: var(--s2) var(--s3); margin-bottom: 12px; }
+  .page .search-result-item { padding: var(--s2) var(--s3); }
+
+  /* tabs */
+  .page .tab-btn, .page .proj-tab-btn { padding: var(--s2) var(--s3); font-size: var(--fs-11); }
+  /* Experience and Projects body copy — the largest block of running
+     text in the book, and previously the smallest type in it. */
+  .page .tab-pane, .page .proj-tab-pane { font-size: var(--fs-15); }
+  .page[data-section="experience"] .page-desc {
+    color: var(--text);
+    font-style: normal;
+  }
+  .page[data-section="experience"] .tab-pane {
+    font-family: 'Fraunces', serif;
+    font-style: normal;
+    font-size: var(--fs-15);
+    line-height: 1.55;
+  }
+  .page[data-section="experience"] .tab-pane ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: var(--s2);
+  }
+  .page[data-section="experience"] .tab-pane h4 {
+    color: var(--text);
+    font-size: var(--fs-18);
+    line-height: 1.25;
+    margin-bottom: var(--s3);
+  }
+  .page[data-section="experience"] .tab-pane li + li { margin-top: 8px; }
+
+  /* project tabs */
+  .page .proj-card h4 { font-size: var(--fs-15); }
+
+  /* ══ MOBILE ══
+     The single narrow-viewport block. There used to be two, 130 lines
+     apart with the whole compaction section between them. 767 and not
+     768 so this agrees with READER_MOBILE_QUERY in book-ui.js about
+     which reader is running at exactly 768px. */
+  @media (max-width: 767px) {
+    .sidebar { width: min(260px, 82vw); }
+    .book-area { padding: 60px 10px 12px; }
+    /* Portrait mode shows a single page — different pre-init ratio */
+    #book:not(.stf__parent) { aspect-ratio: 550 / 720; }
+
+    /* Snap reader: edge to edge — the page is the viewport now. The top
+       pad clears the fixed hamburger, the bottom the dot row and the
+       home bar. */
+    .app-shell:has(.book--snap) .book-area {
+      padding: 52px 0 calc(var(--s2) + env(safe-area-inset-bottom));
+    }
+    .book-controls--snap { margin-top: 0; }
+    /* The 96px reservation stops the desktop arrows shifting on every
+       flip; with no arrows beside it, it just crowds the dots. */
+    .book-controls--snap #page-indicator { min-width: 0; }
+    #menu-toggle { top: calc(var(--s2) + env(safe-area-inset-top)); }
+
+    /* Component compaction inside portrait pages */
+    .page .kanban { grid-template-columns: 1fr; }
+    .page .kanban-list { min-height: 0; }
+    .tab-nav { -webkit-overflow-scrolling: touch; }
+  }
+
+  /* ══ TOUCH TARGETS ══
+     Everything the compaction block above shrank is still tapped by a
+     thumb. Sizing is done with min-height rather than padding maths so
+     the compact type stays and only the hit area grows. Applies to
+     narrow viewports and to any coarse pointer (tablets, touch laptops)
+     — this block must stay last, since the compaction selectors it
+     corrects are equally specific. */
+  @media (max-width: 767px), (pointer: coarse) {
+    /* iOS Safari zooms into any field under 16px on focus, and with
+       body{overflow:hidden} the visitor cannot pan back out. */
+    .page .form-field input,
+    .page .form-field textarea,
+    .page .form-field select,
+    .page #search-input,
+    .form-field input,
+    .form-field textarea,
+    .form-field select,
+    #search-input {
+      font-size: 16px;
+      min-height: 44px;
+      padding: var(--s2) var(--s3);
+    }
+    .page .form-field textarea, .form-field textarea { min-height: 88px; }
+
+    .page .filter-btn,
+    .page .tab-btn,
+    .page .proj-tab-btn,
+    .page .accordion-header,
+    .filter-btn, .tab-btn, .proj-tab-btn, .accordion-header {
+      min-height: 44px;
+    }
+
+    .toc-links a {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Was a bare inline link with no padding — a ~13px tall target. */
+    .proj-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 2px;
+    }
+
+    .toast-close {
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 280px + two 32px offsets left 8px of gutter at 320px wide. */
+    #toast-container {
+      left: 16px;
+      right: 16px;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    .toast { min-width: 0; width: 100%; }
+  }
+
+  /* ══ FOCUS ══
+     Two rules used to strip the outline (on the form fields and the
+     search box) and put nothing back, and the buttons never had a focus
+     style at all — so keyboard navigation was invisible. One shared ring,
+     drawn with :focus-visible so it appears for keyboards and not for
+     mouse clicks. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* The fields draw their own border, so ring the field itself rather
+     than letting the outline sit outside the 2px frame. */
+  .form-field:focus-within label { color: var(--text); }
+  .form-field input:focus-visible,
+  .form-field textarea:focus-visible,
+  .form-field select:focus-visible,
+  #search-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 0;
+    border-color: var(--line-strong);
+  }
+
+  /* ══ PRESS ══
+     Now that hover is gated behind (hover: hover), a press state is the
+     only feedback a thumb gets. */
+  .btn:active,
+  .flip-btn:active,
+  .filter-btn:active,
+  .tab-btn:active,
+  .proj-tab-btn:active,
+  .book-dot:active {
+    transform: translateY(1px);
+  }
+  .btn:active { box-shadow: none; }
+
+  /* ══ REDUCED MOTION ══
+     The site otherwise runs, unprompted: a 900ms auto-open flip, a
+     page-turn sound on every flip, a 2s counter tween, tab fades and
+     staggered cascades. JS handles the first three (see book-ui.js);
+     this collapses what is left to near-instant, keeping opacity
+     changes so state is still legible. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .kanban-card.ui-draggable-dragging { transform: none; }
+  }
+
+  /* Sidebar foot: caption plus the mute control */
+  .toc-foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s3);
+  }
+
+  #mute-toggle {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-size: var(--fs-15);
+    line-height: 1;
+    transition: border-color var(--t-fast), background-color var(--t-fast);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    #mute-toggle:hover { border-color: var(--accent); }
+  }
